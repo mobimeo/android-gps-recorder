@@ -43,29 +43,6 @@ data class Position(
         val bearingAccuracyDegrees: Float? = null
 )
 
-private fun Location.toLocationEntity(
-        recordId: String,
-        index: Long,
-        created: Long = System.currentTimeMillis()
-): Position {
-    return Position(recordId,
-            index,
-            created,
-            provider,
-            time,
-            elapsedRealtimeNanos,
-            latitude,
-            longitude,
-            if (hasAltitude()) altitude else null,
-            if (hasSpeed()) speed else null,
-            if (hasBearing()) bearing else null,
-            if (hasAccuracy()) accuracy else null,
-            if (hasVerticalAccuracy()) verticalAccuracyMeters else null,
-            if (hasSpeedAccuracy()) speedAccuracyMetersPerSecond else null,
-            if (hasBearingAccuracy()) bearingAccuracyDegrees else null
-    )
-}
-
 private fun Position.toLocation(): Location {
     val l = Location(provider)
     l.time = time

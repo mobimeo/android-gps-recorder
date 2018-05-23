@@ -4,7 +4,7 @@ import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Update
 
-interface BaseDao<T> {
+internal interface BaseDao<T> {
     @Insert
     fun insert(vararg entities: T)
 
