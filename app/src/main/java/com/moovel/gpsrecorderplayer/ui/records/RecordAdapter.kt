@@ -13,13 +13,12 @@ import kotlinx.android.synthetic.main.record.view.*
 class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) {
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<Record>() {
-            override fun areItemsTheSame(oldItem: Record?, newItem: Record?): Boolean {
-                return oldItem?.id == newItem?.id
+            override fun areItemsTheSame(oldItem: Record, newItem: Record): Boolean {
+                return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: Record?, newItem: Record?): Boolean {
+            override fun areContentsTheSame(oldItem: Record, newItem: Record): Boolean {
                 return oldItem == newItem
-
             }
         }
     }
