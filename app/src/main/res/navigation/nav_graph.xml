@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@+id/records_fragment">
+
+    <fragment
+        android:id="@+id/records_fragment"
+        android:name="com.moovel.gpsrecorderplayer.ui.records.RecordsFragment"
+        android:label="Records Fragment"
+        tools:layout="@layout/records_fragment">
+
+        <action
+            android:id="@+id/action_start_record"
+            app:destination="@id/record_fragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/record_fragment"
+        android:name="com.moovel.gpsrecorderplayer.ui.record.RecordFragment"
+        android:label="Record Fragment"
+        tools:layout="@layout/record_fragment" />
+
+</navigation>
