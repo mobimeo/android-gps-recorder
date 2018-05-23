@@ -69,7 +69,7 @@ class Recorder internal constructor(
 
     init {
         client.lastLocation.addOnSuccessListener { onLocation(it, true) }
-        client.requestLocationUpdates(locationRequest, locationCallback)
+        client.requestLocationUpdates(locationRequest, locationCallback, null)
 
         async {
             recordsDao.insert(Record(recordId, name))
