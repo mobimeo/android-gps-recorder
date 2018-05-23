@@ -1,7 +1,9 @@
 package com.moovel.gpsrecorderplayer.ui.records
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -11,6 +13,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.NavHostFragment
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.repo.RecordsService
 import kotlinx.android.synthetic.main.records_fragment.*
 
 class RecordsFragment : Fragment() {
@@ -30,10 +33,19 @@ class RecordsFragment : Fragment() {
         records_list.adapter = recordsAdapter
         records_list.layoutManager = LinearLayoutManager(requireContext())
 
+
         create_record_button.setOnClickListener {
-            NavHostFragment.findNavController(this).navigate(R.id.record_fragment)
+            if (hasLocationPermission()) {
+                begin()
+            } else {
+                requestPermissions(arrayOf(ACCESS_FINE_LOCATION), 0x5F3E)
+            }
+
         }
     }
+
+    private fun hasLocationPermission() =
+            requireActivity().checkSelfPermission(ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -42,5 +54,13 @@ class RecordsFragment : Fragment() {
         viewModel.records.observe(this, Observer<List<Record>> {
             recordsAdapter.submitList(it)
         })
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (hasLocationPermission()) begin()
+    }
+
+    private fun begin() {
+        NavHostFragment.findNavController(this).navigate(R.id.record_fragment)
     }
 }

@@ -36,7 +36,7 @@ class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) 
     class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(record: Record) {
             itemView.name.text = record.name
-            itemView.name.created.text = record.start.toString()
+            itemView.created.text = record.start.toString()
         }
     }
 }
