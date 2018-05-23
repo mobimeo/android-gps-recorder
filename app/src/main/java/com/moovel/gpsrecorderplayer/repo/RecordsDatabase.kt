@@ -6,9 +6,9 @@ import android.arch.persistence.room.RoomDatabase
 @Database(version = 1,
         entities = [
             Record::class,
-            LocationEntity::class
+            Position::class
         ])
-abstract class RecordsDatabase : RoomDatabase() {
+internal abstract class RecordsDatabase : RoomDatabase() {
     abstract fun recordsDao(): RecordsDao
-    abstract fun locationsDao(): LocationsDao
+    abstract fun positionsDao(): PositionsDao
 }

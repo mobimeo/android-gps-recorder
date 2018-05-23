@@ -3,51 +3,54 @@ package com.moovel.gpsrecorderplayer.repo
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
-import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.Index
 import android.location.Location
-import java.time.ZonedDateTime
 
-@Entity(tableName = "records")
+@Entity(
+        tableName = "records",
+        primaryKeys = ["id"],
+        indices = [Index("id")]
+)
 data class Record(
-        @PrimaryKey
         val id: String,
-        val name: String
-//        val start: ZonedDateTime = ZonedDateTime.now(),
-//        val end: ZonedDateTime? = null
+        val name: String,
+        val start: Long = System.currentTimeMillis()
 )
 
 @Entity(
-        tableName = "locations",
+        tableName = "positions",
         primaryKeys = ["index", "record_id"],
+        indices = [Index("record_id"), Index("record_id", "index")],
         foreignKeys = [ForeignKey(entity = Record::class, parentColumns = ["id"], childColumns = ["record_id"], onDelete = ForeignKey.CASCADE)]
 )
-data class LocationEntity(
+data class Position(
         @ColumnInfo(name = "record_id")
         val recordId: String,
         val index: Long,
-//        val created: ZonedDateTime,
+        val created: Long = System.currentTimeMillis(),
 
         val provider: String,
         val time: Long,
         val elapsedRealtimeNanos: Long,
         val latitude: Double,
         val longitude: Double,
-        val altitude: Double?,
-        val speed: Float?,
-        val bearing: Float?,
-        val horizontalAccuracyMeters: Float?,
-        val verticalAccuracyMeters: Float?,
-        val speedAccuracyMetersPerSecond: Float?,
-        val bearingAccuracyDegrees: Float?
+        val altitude: Double? = null,
+        val speed: Float? = null,
+        val bearing: Float? = null,
+        val horizontalAccuracyMeters: Float? = null,
+        val verticalAccuracyMeters: Float? = null,
+        val speedAccuracyMetersPerSecond: Float? = null,
+        val bearingAccuracyDegrees: Float? = null
 )
 
-fun Location.toLocationEntity(
+private fun Location.toLocationEntity(
         recordId: String,
         index: Long,
-        created: ZonedDateTime = ZonedDateTime.now()
-): LocationEntity {
-    return LocationEntity(recordId, index,
-//            created,
+        created: Long = System.currentTimeMillis()
+): Position {
+    return Position(recordId,
+            index,
+            created,
             provider,
             time,
             elapsedRealtimeNanos,
@@ -63,7 +66,7 @@ fun Location.toLocationEntity(
     )
 }
 
-fun LocationEntity.toLocation(): Location {
+private fun Position.toLocation(): Location {
     val l = Location(provider)
     l.time = time
     l.elapsedRealtimeNanos = elapsedRealtimeNanos
