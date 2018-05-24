@@ -3,15 +3,10 @@ package com.moovel.gpsrecorderplayer.ui.records
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.view.GravityCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +25,6 @@ class RecordsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.records_fragment, container, false)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +40,7 @@ class RecordsFragment : Fragment() {
             }
         }
 
-        menu_button.setOnClickListener { drawer_layout.openDrawer(GravityCompat.START) }
+        menu_button.setOnClickListener { (activity as? MainActivity)?.openDrawer() }
     }
 
     private fun hasLocationPermission() =

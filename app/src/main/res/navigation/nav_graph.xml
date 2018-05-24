@@ -13,7 +13,7 @@
         <action
             android:id="@+id/action_start_record"
             app:destination="@id/record_fragment" />
-
+        
     </fragment>
 
     <fragment
