@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginBottom="56dp"
         android:id="@+id/records_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="56dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,16 +29,16 @@
             app:lottie_loop="true" />
 
         <TextView
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Neue Aufzeichnung" />
+            android:text="Neue Aufzeichnung"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <TextView
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GPS Positionen aufnehmen" />
+            android:text="GPS Positionen aufnehmen"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     </LinearLayout>
 
@@ -71,5 +72,65 @@
         android:layout_gravity="bottom|center_horizontal"
         android:src="@drawable/ic_add_white_24dp"
         app:layout_anchor="@+id/bottom_appbar" />
+
+    <com.moovel.gpsrecorderplayer.ui.widget.BottomDrawer
+        android:id="@+id/bottom_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="16dp"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_top_corners"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="72dp"
+                android:background="#eee" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:text="Menu item 1" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#eee" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:text="Menu item 2" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#eee" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:text="Menu item 3" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#eee" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:text="Menu item 4" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp"
+                android:background="#eee " />
+
+        </LinearLayout>
+
+    </com.moovel.gpsrecorderplayer.ui.widget.BottomDrawer>
 
 </android.support.design.widget.CoordinatorLayout>

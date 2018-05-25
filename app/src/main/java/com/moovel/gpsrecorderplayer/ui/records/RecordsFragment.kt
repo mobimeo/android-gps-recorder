@@ -11,9 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.NavHostFragment
-import com.moovel.gpsrecorderplayer.MainActivity
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.ui.widget.BottomDrawer.Companion.STATE_EXPANDED
 import kotlinx.android.synthetic.main.records_fragment.*
 
 class RecordsFragment : Fragment() {
@@ -40,7 +40,7 @@ class RecordsFragment : Fragment() {
             }
         }
 
-        menu_button.setOnClickListener { (activity as? MainActivity)?.openDrawer() }
+        menu_button.setOnClickListener { bottom_drawer.open()}
     }
 
     private fun hasLocationPermission() =
