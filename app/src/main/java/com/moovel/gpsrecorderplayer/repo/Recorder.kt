@@ -11,10 +11,8 @@ import com.google.android.gms.location.LocationResult
 import java.util.UUID
 
 class Recorder internal constructor(
-        context: Context,
-        db: RecordsDatabase,
-        val name: String
-) : LocationSource {
+        context: Context
+) : Task, LocationSource {
     companion object {
         private val locationRequest: LocationRequest
             get() {
@@ -48,15 +46,15 @@ class Recorder internal constructor(
         }
     }
 
-    private val recordsDao = db.recordsDao()
-    private val positionsDao = db.positionsDao()
+    private val recordsDao = RecordsDatabase.getInstance(context).recordsDao()
+    private val positionsDao = RecordsDatabase.getInstance(context).positionsDao()
 
     private val locationLiveData = MutableLiveData<Location>()
 
     val recordId = UUID.randomUUID().toString()
     private var index: Long = 0
 
-    var completed: Boolean = false
+    var state: State = State.READY
         private set
 
     private val client = FusedLocationProviderClient(context.applicationContext)
@@ -72,7 +70,7 @@ class Recorder internal constructor(
         client.requestLocationUpdates(locationRequest, locationCallback, null)
 
         async {
-            recordsDao.insert(Record(recordId, name))
+            recordsDao.insert(Record(recordId, recordId)) // FIXME name
         }
     }
 
@@ -81,21 +79,42 @@ class Recorder internal constructor(
     }
 
     private fun onLocation(location: Location) {
-        if (completed) return
+        locationLiveData.value = location
+        if (state != State.STARTED) return
+
+        insertPosition(location)
+    }
+
+    private fun insertPosition(location: Location) {
         val currentIndex = index++
         async {
             val position = location.toPosition(recordId, currentIndex)
             positionsDao.insert(position)
         }
-        locationLiveData.value = location
     }
+
 
     override fun locations(): LiveData<Location> {
         return locationLiveData
     }
 
-    fun complete() {
-        completed = true
+    fun start() {
+        if (state != State.READY) throw IllegalStateException("Recorder is finished")
+        state = State.STARTED
+        locationLiveData.value?.let { insertPosition(it) }
+    }
+
+    fun release() {
+        if (state != State.STARTED || state != State.READY) throw IllegalStateException("Recorder already finished")
+        state = State.RELEASED
         client.removeLocationUpdates(locationCallback)
+    }
+
+    @Deprecated("Lets remove it")
+    enum class State {
+        READY,
+        STARTED,
+        STOPPED,
+        RELEASED
     }
 }
