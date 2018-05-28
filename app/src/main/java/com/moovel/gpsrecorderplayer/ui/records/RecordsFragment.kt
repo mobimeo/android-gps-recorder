@@ -55,8 +55,9 @@ class RecordsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(RecordsViewModel::class.java)
 
-        viewModel.records.observe(this, Observer<List<Record>> {
-            recordsAdapter.submitList(it)
+        viewModel.records.observe(this, Observer<List<Record>> { list ->
+            recordsAdapter.submitList(list)
+            empty_view.visibility = if (list?.isNotEmpty() == true) View.GONE else View.VISIBLE
         })
     }
 
