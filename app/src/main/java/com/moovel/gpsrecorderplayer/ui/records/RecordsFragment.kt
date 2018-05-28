@@ -3,6 +3,7 @@ package com.moovel.gpsrecorderplayer.ui.records
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -11,9 +12,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
-import com.moovel.gpsrecorderplayer.ui.widget.BottomDrawer.Companion.STATE_EXPANDED
 import kotlinx.android.synthetic.main.records_fragment.*
 
 class RecordsFragment : Fragment() {
@@ -40,7 +41,11 @@ class RecordsFragment : Fragment() {
             }
         }
 
-        menu_button.setOnClickListener { bottom_drawer.open()}
+        menu_button.setOnClickListener { bottom_drawer.open() }
+
+        open_source_menu_item.setOnClickListener {
+            startActivity(Intent(context, OssLicensesMenuActivity::class.java))
+        }
     }
 
     private fun hasLocationPermission() =
