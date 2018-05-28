@@ -31,13 +31,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Neue Aufzeichnung"
+            android:text="@string/records_new_record"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GPS Positionen aufnehmen"
+            android:text="@string/records_record_gps_positions"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
     </LinearLayout>
@@ -100,7 +100,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="24dp"
-                android:text="Open Source-Lizenzen"/>
+                android:text="@string/records_open_source_licenses"/>
 
             <!-- FIXME inflate menu instead and i18n-->
 

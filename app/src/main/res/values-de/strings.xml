@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">GPS Recorder &amp; Player</string>
+    <string name="records_open_source_licenses">Open Source-Lizenzen</string>
+    <string name="records_new_record">Neue Aufzeichnung</string>
+    <string name="records_record_gps_positions">GPS Positionen aufnehmen</string>
+</resources>
