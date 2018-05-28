@@ -28,14 +28,154 @@
             android:id="@+id/edit_record_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="40dp"
             android:ellipsize="end"
             android:lines="1"
             android:paddingHorizontal="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textSize="32sp"
             tools:text="25.05.2018 Aufnahme 1"/>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="Latitude"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="Longitude"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="Altitude"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="48.78232"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="9.17702"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="247"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:text="Accurancy"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:text="Bearing Accurancy"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:text="Vertical Accurancy"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="13.78"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="7.17"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="5.29"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:text="Speed"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:text="Speed Accurancy"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginTop="16dp"
+                android:text="Location Provider"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="25.44"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="8.23"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="GPS"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+
+        </GridLayout>
 
     </LinearLayout>
 
