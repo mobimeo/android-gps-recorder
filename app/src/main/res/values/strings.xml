@@ -3,4 +3,5 @@
     <string name="records_open_source_licenses">Open source licenses</string>
     <string name="records_new_record">New record</string>
     <string name="records_record_gps_positions">Record GPS positions</string>
+    <string name="record_new_record">%s record %d</string>
 </resources>
