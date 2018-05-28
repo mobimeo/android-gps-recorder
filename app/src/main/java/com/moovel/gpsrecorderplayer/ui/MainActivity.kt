@@ -1,9 +1,10 @@
-package com.moovel.gpsrecorderplayer
+package com.moovel.gpsrecorderplayer.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.moovel.gpsrecorderplayer.R
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.android.synthetic.main.records_fragment.*
 
