@@ -26,6 +26,8 @@
         </activity>
         <activity android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"/>
         <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"/>
+
+        <service android:name=".repo.RecordsService" />
     </application>
 
 </manifest>

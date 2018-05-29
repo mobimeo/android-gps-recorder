@@ -1,6 +1,8 @@
 package com.moovel.gpsrecorderplayer.ui.record
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -42,6 +44,16 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(RecordViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel.locationLiveData.observe(this, Observer<Location> {
+            text_latitude.text = String.format("%.5f", it?.latitude)
+            text_longitude.text = String.format("%.5f", it?.longitude)
+            text_altitude.text = String.format("%.1f", it?.altitude)
+            text_accuracy.text = String.format("%.1f", it?.accuracy)
+            text_bearing.text = String.format("%.1f", it?.bearing)
+            text_bearing_accuracy.text = String.format("%.1f", it?.bearingAccuracyDegrees)
+            text_vertical_accuracy.text = String.format("%.1f", it?.verticalAccuracyMeters)
+            text_speed.text = String.format("%.1f", it?.speed)
+            text_speed_accuracy.text = String.format("%.1f", it?.speedAccuracyMetersPerSecond)
+        })
     }
 }
