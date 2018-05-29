@@ -9,6 +9,12 @@ import android.view.ViewGroup
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
 import kotlinx.android.synthetic.main.record.view.*
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.TimeZone
+
 
 class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) {
     companion object {
@@ -36,7 +42,8 @@ class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) 
     class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(record: Record) {
             itemView.name.text = record.name
-            itemView.created.text = record.start.toString()
+            val time = LocalDateTime.ofInstant(Instant.ofEpochMilli(record.start), TimeZone.getDefault().toZoneId())
+            itemView.created.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(time)
         }
     }
 }

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 xmlns:tools="http://schemas.android.com/tools"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:fitsSystemWindows="true"
-                                                 tools:context=".ui.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.MainActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/records_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="56dp"/>
+        android:layout_marginBottom="56dp"
+        android:clipToPadding="false"
+        android:paddingVertical="32dp" />
 
     <LinearLayout
         android:id="@+id/empty_view"
@@ -27,19 +29,19 @@
             android:layout_height="wrap_content"
             app:lottie_autoPlay="true"
             app:lottie_fileName="location.json"
-            app:lottie_loop="true"/>
+            app:lottie_loop="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/records_new_record"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/records_record_gps_positions"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     </LinearLayout>
 
@@ -62,7 +64,7 @@
             android:clickable="true"
             android:focusable="true"
             android:padding="16dp"
-            android:src="@drawable/ic_menu_white_24dp"/>
+            android:src="@drawable/ic_menu_white_24dp" />
 
     </android.support.design.bottomappbar.BottomAppBar>
 
@@ -72,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:src="@drawable/ic_add_white_24dp"
-        app:layout_anchor="@+id/bottom_appbar"/>
+        app:layout_anchor="@+id/bottom_appbar" />
 
     <com.moovel.gpsrecorderplayer.ui.widget.BottomDrawer
         android:id="@+id/bottom_drawer"
@@ -91,7 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="72dp"
-                android:background="#eee"/>
+                android:background="#eee" />
 
             <TextView
                 android:id="@+id/open_source_menu_item"
@@ -101,12 +103,12 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="24dp"
-                android:text="@string/records_open_source_licenses"/>
+                android:text="@string/records_open_source_licenses" />
 
             <!-- FIXME inflate menu instead and i18n-->
 
-         </LinearLayout>
+        </LinearLayout>
 
-     </com.moovel.gpsrecorderplayer.ui.widget.BottomDrawer>
+    </com.moovel.gpsrecorderplayer.ui.widget.BottomDrawer>
 
- </android.support.design.widget.CoordinatorLayout>
+</android.support.design.widget.CoordinatorLayout>

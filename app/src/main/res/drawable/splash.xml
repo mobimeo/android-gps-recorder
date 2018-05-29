@@ -5,7 +5,7 @@
         android:drawable="@color/colorPrimary"/>
 
     <item
-        android:drawable="@drawable/ic_location_on_white_24dp"
+        android:drawable="@drawable/ic_location_on_white_128dp"
         android:gravity="center"/>
 
 </layer-list>
