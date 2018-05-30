@@ -54,16 +54,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         viewModel = ViewModelProviders.of(this).get(RecordViewModel::class.java)
         viewModel.locationLiveData.observe(this, Observer<Location> { location ->
             if (location == null) return@Observer
-
-            text_latitude.text = String.format("%.5f", location.latitude)
-            text_longitude.text = String.format("%.5f", location.longitude)
-            text_altitude.text = String.format("%.1f", location.altitude)
-            text_accuracy.text = String.format("%.1f", location.accuracy)
-            text_bearing.text = String.format("%.1f", location.bearing)
-            text_bearing_accuracy.text = String.format("%.1f", location.bearingAccuracyDegrees)
-            text_vertical_accuracy.text = String.format("%.1f", location.verticalAccuracyMeters)
-            text_speed.text = String.format("%.1f", location.speed)
-            text_speed_accuracy.text = String.format("%.1f", location.speedAccuracyMetersPerSecond)
+            location_view.location = location
             googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 17f))
         })
     }
