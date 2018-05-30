@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
 import kotlinx.android.synthetic.main.record_fragment.*
 import java.time.LocalDate
@@ -18,6 +20,7 @@ import java.time.format.DateTimeFormatter.ISO_DATE
 
 class RecordFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: RecordViewModel
+    private var googleMap: GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,22 +41,30 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         edit_record_name.setSelection(edit_record_name.text.length)
     }
 
-    override fun onMapReady(p0: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
+        googleMap.setPadding(0, top_container.measuredHeight, 0, bottom_appbar.measuredHeight)
+        googleMap.isMyLocationEnabled = true
+        googleMap.uiSettings.setAllGesturesEnabled(false)
+        googleMap.uiSettings.isMyLocationButtonEnabled = false
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(RecordViewModel::class.java)
-        viewModel.locationLiveData.observe(this, Observer<Location> {
-            text_latitude.text = String.format("%.5f", it?.latitude)
-            text_longitude.text = String.format("%.5f", it?.longitude)
-            text_altitude.text = String.format("%.1f", it?.altitude)
-            text_accuracy.text = String.format("%.1f", it?.accuracy)
-            text_bearing.text = String.format("%.1f", it?.bearing)
-            text_bearing_accuracy.text = String.format("%.1f", it?.bearingAccuracyDegrees)
-            text_vertical_accuracy.text = String.format("%.1f", it?.verticalAccuracyMeters)
-            text_speed.text = String.format("%.1f", it?.speed)
-            text_speed_accuracy.text = String.format("%.1f", it?.speedAccuracyMetersPerSecond)
+        viewModel.locationLiveData.observe(this, Observer<Location> { location ->
+            if (location == null) return@Observer
+
+            text_latitude.text = String.format("%.5f", location.latitude)
+            text_longitude.text = String.format("%.5f", location.longitude)
+            text_altitude.text = String.format("%.1f", location.altitude)
+            text_accuracy.text = String.format("%.1f", location.accuracy)
+            text_bearing.text = String.format("%.1f", location.bearing)
+            text_bearing_accuracy.text = String.format("%.1f", location.bearingAccuracyDegrees)
+            text_vertical_accuracy.text = String.format("%.1f", location.verticalAccuracyMeters)
+            text_speed.text = String.format("%.1f", location.speed)
+            text_speed_accuracy.text = String.format("%.1f", location.speedAccuracyMetersPerSecond)
+            googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 17f))
         })
     }
 }
