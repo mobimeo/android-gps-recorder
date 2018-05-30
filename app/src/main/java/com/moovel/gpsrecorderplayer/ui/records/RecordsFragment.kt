@@ -21,7 +21,7 @@ class RecordsFragment : Fragment() {
 
     private lateinit var viewModel: RecordsViewModel
 
-    private val recordsAdapter = RecordAdapter()
+    private val adapter = RecordAdapter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -30,7 +30,7 @@ class RecordsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        records_list.adapter = recordsAdapter
+        records_list.adapter = adapter
         records_list.layoutManager = LinearLayoutManager(requireContext())
 
         create_record_button.setOnClickListener {
@@ -41,10 +41,15 @@ class RecordsFragment : Fragment() {
             }
         }
 
+        adapter.clickListener = { record ->
+            val bundle = Bundle().apply { putParcelable("record", record) }
+            NavHostFragment.findNavController(this).navigate(R.id.playback_fragment, bundle)
+        }
+
         menu_button.setOnClickListener { bottom_drawer.open() }
 
         open_source_menu_item.setOnClickListener {
-            startActivity(Intent(context, OssLicensesMenuActivity::class.java))
+            startActivity(Intent(context, OssLicensesMenuActivity::class.java)) //FIXME use nav controller
         }
     }
 
@@ -56,7 +61,7 @@ class RecordsFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(RecordsViewModel::class.java)
 
         viewModel.records.observe(this, Observer<List<Record>> { list ->
-            recordsAdapter.submitList(list)
+            adapter.submitList(list)
             empty_view.visibility = if (list?.isNotEmpty() == true) View.GONE else View.VISIBLE
         })
     }

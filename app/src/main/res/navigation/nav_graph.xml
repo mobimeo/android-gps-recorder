@@ -13,6 +13,10 @@
         <action
             android:id="@+id/action_start_record"
             app:destination="@id/record_fragment" />
+
+        <action
+            android:id="@+id/action_open_playback"
+            app:destination="@id/playback_fragment" />
         
     </fragment>
 
@@ -21,5 +25,15 @@
         android:name="com.moovel.gpsrecorderplayer.ui.record.RecordFragment"
         android:label=" "
         tools:layout="@layout/record_fragment" />
+
+    <fragment
+        android:id="@+id/playback_fragment"
+        android:name="com.moovel.gpsrecorderplayer.ui.playback.PlayBackFragment"
+        android:label=" "
+        tools:layout="@layout/playback_fragment" >
+
+        <argument android:name="record" />
+
+    </fragment>
 
 </navigation>

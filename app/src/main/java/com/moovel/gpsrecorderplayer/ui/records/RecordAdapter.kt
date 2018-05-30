@@ -17,6 +17,8 @@ import java.util.TimeZone
 
 
 class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) {
+    var clickListener: ((Record) -> Unit)? = null
+
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<Record>() {
             override fun areItemsTheSame(oldItem: Record, newItem: Record): Boolean {
@@ -39,11 +41,12 @@ class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) 
         holder.bind(record)
     }
 
-    class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(record: Record) {
             itemView.name.text = record.name
             val time = LocalDateTime.ofInstant(Instant.ofEpochMilli(record.start), TimeZone.getDefault().toZoneId())
             itemView.created.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(time)
+            itemView.setOnClickListener { clickListener?.invoke(record) }
         }
     }
 }

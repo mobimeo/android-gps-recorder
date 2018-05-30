@@ -5,17 +5,21 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
 import android.location.Location
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 @Entity(
         tableName = "records",
         primaryKeys = ["id"],
         indices = [Index("id")]
 )
+
+@Parcelize
 data class Record(
         val id: String,
         val name: String,
         val start: Long = System.currentTimeMillis()
-)
+) : Parcelable
 
 @Entity(
         tableName = "positions",
