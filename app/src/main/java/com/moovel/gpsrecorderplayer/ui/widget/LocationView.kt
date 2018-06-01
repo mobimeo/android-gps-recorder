@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.utils.format
 import kotlinx.android.synthetic.main.view_location.view.*
 
 class LocationView @JvmOverloads constructor(
@@ -18,17 +19,16 @@ class LocationView @JvmOverloads constructor(
     var location: Location? = null
         set(value) {
             field = value
-            if (value == null) return
-
-            text_latitude.text = String.format("%.5f", value.latitude)
-            text_longitude.text = String.format("%.5f", value.longitude)
-            text_altitude.text = String.format("%.1f", value.altitude)
-            text_accuracy.text = String.format("%.1f", value.accuracy)
-            text_bearing.text = String.format("%.1f", value.bearing)
-            text_bearing_accuracy.text = String.format("%.1f", value.bearingAccuracyDegrees)
-            text_vertical_accuracy.text = String.format("%.1f", value.verticalAccuracyMeters)
-            text_speed.text = String.format("%.1f", value.speed)
-            text_speed_accuracy.text = String.format("%.1f", value.speedAccuracyMetersPerSecond)
+            val na = context.getString(R.string.record_not_available)
+            latitude.text = value?.latitude?.format(5) ?: na
+            longitude.text = value?.longitude?.format(5) ?: na
+            speed.text = value?.speed?.takeIf { value.hasSpeed() }?.format() ?: na
+            bearing.text = value?.bearing?.takeIf { value.hasBearing() }?.format() ?: na
+            altitude.text = value?.altitude?.takeIf { value.hasAltitude() }?.format() ?: na
+            accuracy.text = value?.accuracy?.takeIf { value.hasAccuracy() }?.format() ?: na
+            bearing_acc.text = value?.bearingAccuracyDegrees?.takeIf { value.hasBearingAccuracy() }?.format() ?: na
+            vertical_acc.text = value?.verticalAccuracyMeters?.takeIf { value.hasVerticalAccuracy() }?.format() ?: na
+            speed_acc.text = value?.speedAccuracyMetersPerSecond?.takeIf { value.hasSpeedAccuracy() }?.format() ?: na
         }
 
     init {

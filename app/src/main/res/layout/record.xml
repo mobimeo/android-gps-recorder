@@ -31,14 +31,14 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             tools:text="Run 1" />
 
         <TextView
             android:id="@+id/created"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
             app:layout_constraintTop_toBottomOf="@+id/name"
             tools:text="01. Feb 2018" />
 

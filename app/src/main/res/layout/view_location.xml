@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:columnCount="3"
@@ -11,45 +11,48 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:text="@string/record_latitude"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:text="@string/record_longitude"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:text="@string/record_altitude"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <TextView
-        android:id="@+id/text_latitude"
+        android:id="@+id/latitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        tools:text="48.78232"/>
+        tools:text="48.78232" />
 
     <TextView
-        android:id="@+id/text_longitude"
+        android:id="@+id/longitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        tools:text="9.17702"/>
+        tools:text="9.17702" />
 
     <TextView
-        android:id="@+id/text_altitude"
+        android:id="@+id/altitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        tools:text="247"/>
+        tools:text="247" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,7 +60,7 @@
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
         android:text="@string/record_bearing"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -65,7 +68,7 @@
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
         android:text="@string/record_speed"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -73,31 +76,34 @@
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
         android:text="@string/record_vertical_accuracy"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <TextView
-        android:id="@+id/text_bearing"
+        android:id="@+id/bearing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        tools:text="15.44"/>
+        tools:text="15.44" />
 
     <TextView
-        android:id="@+id/text_speed"
+        android:id="@+id/speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        tools:text="25.44"/>
+        tools:text="25.44" />
 
     <TextView
-        android:id="@+id/text_vertical_accuracy"
+        android:id="@+id/vertical_acc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        tools:text="5.29"/>
+        tools:text="5.29" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -105,7 +111,7 @@
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
         android:text="@string/record_bearing_accuracy"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -113,7 +119,7 @@
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
         android:text="@string/record_speed_accuracy"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -121,30 +127,33 @@
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
         android:text="@string/record_horizontal_accuracy"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
     <TextView
-        android:id="@+id/text_bearing_accuracy"
+        android:id="@+id/bearing_acc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        tools:text="7.17"/>
+        tools:text="7.17" />
 
     <TextView
-        android:id="@+id/text_speed_accuracy"
+        android:id="@+id/speed_acc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        tools:text="8.23"/>
+        tools:text="8.23" />
 
     <TextView
-        android:id="@+id/text_accuracy"
+        android:id="@+id/accuracy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        tools:text="13.78"/>
+        tools:text="13.78" />
 
 </GridLayout>
