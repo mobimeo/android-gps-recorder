@@ -15,7 +15,7 @@ import android.os.HandlerThread
 import android.os.IBinder
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
-import java.util.UUID
+import java.util.*
 
 class RecordService : Service(), IRecordService {
     companion object {
@@ -60,7 +60,7 @@ class RecordService : Service(), IRecordService {
 
     private var record: Record? = null
     private var index = 0L
-    private val location = LocationLiveData(this)
+    private val location by lazy { LocationLiveData(this) }
     private val polyline = MutableLiveData<List<LatLng>>()
     private var polylineList = emptyList<LatLng>()
         set(value) {
@@ -75,7 +75,8 @@ class RecordService : Service(), IRecordService {
         }
     }
 
-    init {
+    override fun onCreate() {
+        super.onCreate()
         setupNotificationChannel()
     }
 
@@ -154,5 +155,5 @@ class RecordService : Service(), IRecordService {
         return RecordBinder(this)
     }
 
-    class RecordBinder(val service: RecordService) : Binder()
+    private class RecordBinder(val service: RecordService) : Binder()
 }

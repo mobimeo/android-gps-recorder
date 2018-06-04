@@ -31,7 +31,6 @@
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
-        <service android:name=".repo.RecordsService" />
         <service android:name=".repo.RecordService" />
     </application>
 
