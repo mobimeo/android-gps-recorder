@@ -15,6 +15,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.utils.dpToPx
+import com.moovel.gpsrecorderplayer.utils.latLng
+import com.moovel.gpsrecorderplayer.utils.setLocationSource
 import kotlinx.android.synthetic.main.record_fragment.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_DATE
@@ -50,6 +52,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         updatePadding()
+        googleMap.setLocationSource(viewModel.locationLiveData)
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.setAllGesturesEnabled(false)
         googleMap.uiSettings.isMyLocationButtonEnabled = false
@@ -61,7 +64,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         viewModel.locationLiveData.observe(this, Observer<Location> { location ->
             if (location == null) return@Observer
             location_view.location = location
-            googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 17f))
+            googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, 17f))
         })
     }
 

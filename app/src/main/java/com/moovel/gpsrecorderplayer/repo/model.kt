@@ -6,6 +6,7 @@ import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
 import android.location.Location
 import android.os.Parcelable
+import android.telephony.SignalStrength
 import kotlinx.android.parcel.Parcelize
 
 @Entity(
@@ -62,11 +63,15 @@ private fun Position.toLocation(): Location {
     verticalAccuracyMeters?.let { l.verticalAccuracyMeters = it }
     return l
 }
-
+//
 //@Entity(
 //        tableName = "signals",
+//        primaryKeys = ["index", "record_id"],
 //        foreignKeys = [ForeignKey(entity = Record::class, parentColumns = ["id"], childColumns = ["record_id"], onDelete = ForeignKey.CASCADE)]
 //)
-//data class SignalEntity(
-//        val recordId: String
+//data class Signal(
+//        val index: Int,
+//        val recordId: String,
+//        val created: Long = System.currentTimeMillis(),
+//        val networkType: Int,
 //)
