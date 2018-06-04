@@ -14,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.utils.dpToPx
 import kotlinx.android.synthetic.main.record_fragment.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_DATE
@@ -41,9 +42,14 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         edit_record_name.setSelection(edit_record_name.text.length)
     }
 
+    override fun onResume() {
+        super.onResume()
+        updatePadding()
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-        googleMap.setPadding(0, top_container.measuredHeight, 0, bottom_appbar.measuredHeight)
+        updatePadding()
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.setAllGesturesEnabled(false)
         googleMap.uiSettings.isMyLocationButtonEnabled = false
@@ -57,5 +63,9 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
             location_view.location = location
             googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 17f))
         })
+    }
+
+    private fun updatePadding() {
+        googleMap?.setPadding(0, 0, 0, 56.dpToPx())
     }
 }
