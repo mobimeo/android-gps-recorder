@@ -32,6 +32,7 @@
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
         <service android:name=".repo.RecordsService" />
+        <service android:name=".repo.RecordService" />
     </application>
 
 </manifest>

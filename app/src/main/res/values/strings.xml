@@ -17,4 +17,5 @@
     <string name="record_signal_type">Signal type</string>
     <string name="record_signal_class">Signal class</string>
     <string name="record_signal_strength">Signal strength</string>
+    <string name="recording">Recording…</string>
 </resources>
