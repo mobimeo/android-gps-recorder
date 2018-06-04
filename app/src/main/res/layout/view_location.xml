@@ -156,4 +156,55 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         tools:text="13.78" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="16dp"
+        android:text="@string/record_signal_type"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="16dp"
+        android:text="@string/record_signal_class"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="16dp"
+        android:text="@string/record_signal_strength"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+    <TextView
+        android:id="@+id/signal_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        tools:text="7.17" />
+
+    <TextView
+        android:id="@+id/signal_class"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        tools:text="8.23" />
+
+    <TextView
+        android:id="@+id/signal_strength"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:text="@string/record_not_available"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        tools:text="13.78" />
+
 </GridLayout>

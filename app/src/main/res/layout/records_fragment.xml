@@ -89,10 +89,16 @@
             android:background="@drawable/rounded_top_corners"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="72dp"
                 android:background="#eee" />
 
             <TextView
@@ -103,7 +109,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="24dp"
-                android:text="@string/records_open_source_licenses" />
+                android:text="@string/records_open_source_licenses"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
 
             <!-- FIXME inflate menu instead and i18n-->
 
