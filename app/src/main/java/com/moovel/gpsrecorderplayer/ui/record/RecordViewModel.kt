@@ -12,6 +12,7 @@ import android.location.Location
 import android.os.IBinder
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.IRecordService
+import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.repo.RecordService
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -19,8 +20,8 @@ import java.time.format.DateTimeFormatter
 class RecordViewModel(application: Application) : AndroidViewModel(application) {
 
     val locationLiveData: LiveData<Location> = MediatorLiveData<Location>()
-
     val recordingLiveData: LiveData<Boolean> = MediatorLiveData<Boolean>()
+    var stopListener: ((record: Record?) -> Unit)? = null
 
     private lateinit var service: IRecordService
 
@@ -42,7 +43,7 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
 
     fun onClickButton() {
         if (service.isRecording().value == true) {
-            service.stop()
+            stopListener?.invoke(service.stop())
         } else {
             service.start(getApplication<Application>()
                     .getString(R.string.record_new_record, LocalDate.now().format(DateTimeFormatter.ISO_DATE), 1))

@@ -115,15 +115,17 @@ class RecordService : Service(), IRecordService {
         recording.value = true
     }
 
-    override fun stop() {
+    override fun stop(): Record? {
         location.removeObserver(locationObserver)
         signal.removeObserver(signalObserver)
         polylineList = emptyList()
         record?.complete()
+        val current = record
         record = null
         locationIndex = 0
         signalIndex = 0
         recording.value = false
+        return current
     }
 
     override fun current(): Record? {

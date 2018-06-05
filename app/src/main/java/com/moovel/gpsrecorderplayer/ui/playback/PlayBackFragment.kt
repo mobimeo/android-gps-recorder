@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.ui.MainActivity
 import kotlinx.android.synthetic.main.playback_fragment.*
 
 class PlayBackFragment : Fragment() {
@@ -23,6 +24,7 @@ class PlayBackFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).enableBackButton(true)
         val record = arguments?.getParcelable<Record>("record")
         record_name.text = record?.name
     }

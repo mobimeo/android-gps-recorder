@@ -12,8 +12,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.ui.MainActivity
 import com.moovel.gpsrecorderplayer.utils.dpToPx
 import com.moovel.gpsrecorderplayer.utils.latLng
 import com.moovel.gpsrecorderplayer.utils.setLocationSource
@@ -37,6 +37,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mainActivity().enableBackButton(true)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         edit_record_name.setText(getString(R.string.record_new_record, LocalDate.now().format(ISO_DATE), 1))
@@ -74,10 +75,22 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
                 else -> R.drawable.ic_fiber_manual_record_white_24dp
             }))
         })
+
+        viewModel.stopListener = { record ->
+            if (record != null) {
+                // prevent going back to RecordFragment from PlayBackFragment
+                activity?.supportFragmentManager?.popBackStack()
+                mainActivity().startPlaybackFragment(Bundle().apply { putParcelable("record", record) })
+            } else {
+                // TODO handle record failed
+            }
+        }
     }
 
 
     private fun updatePadding() {
         googleMap?.setPadding(0, 0, 0, 56.dpToPx())
     }
+
+    private fun mainActivity() = (activity as MainActivity)
 }

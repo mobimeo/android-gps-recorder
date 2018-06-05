@@ -5,7 +5,7 @@ import com.google.android.gms.maps.model.LatLng
 
 interface IRecordService : LocationSource, SignalSource {
     fun start(name: String)
-    fun stop()
+    fun stop(): Record?
     fun current(): Record?
     fun rename(name: String)
     fun isRecording(): LiveData<Boolean>

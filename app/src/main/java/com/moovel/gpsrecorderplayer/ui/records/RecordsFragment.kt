@@ -11,10 +11,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.ui.MainActivity
 import kotlinx.android.synthetic.main.records_fragment.*
 
 class RecordsFragment : Fragment() {
@@ -30,20 +30,21 @@ class RecordsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mainActivity().enableBackButton(false)
+
         records_list.adapter = adapter
         records_list.layoutManager = LinearLayoutManager(requireContext())
 
         create_record_button.setOnClickListener {
             if (hasLocationPermission()) {
-                begin()
+                mainActivity().startRecordFragment()
             } else {
                 requestPermissions(arrayOf(ACCESS_FINE_LOCATION), 0x5F3E)
             }
         }
 
         adapter.clickListener = { record ->
-            val bundle = Bundle().apply { putParcelable("record", record) }
-            NavHostFragment.findNavController(this).navigate(R.id.playback_fragment, bundle)
+            (activity as MainActivity).startPlaybackFragment(Bundle().apply { putParcelable("record", record) })
         }
 
         menu_button.setOnClickListener { bottom_drawer.open() }
@@ -67,10 +68,8 @@ class RecordsFragment : Fragment() {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (hasLocationPermission()) begin()
+        if (hasLocationPermission()) mainActivity().startRecordFragment()
     }
 
-    private fun begin() {
-        NavHostFragment.findNavController(this).navigate(R.id.record_fragment)
-    }
+    private fun mainActivity() = (activity as MainActivity)
 }
