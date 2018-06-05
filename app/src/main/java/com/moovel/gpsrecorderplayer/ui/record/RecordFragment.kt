@@ -68,7 +68,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
             googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, 17f))
         })
 
-        record_button.setOnClickListener { viewModel.onClickButton() }
+        record_button.setOnClickListener { viewModel.onClickButton(edit_record_name.editableText.toString()) }
         viewModel.recordingLiveData.observe(this, Observer<Boolean> { recording ->
             record_button.setImageDrawable(requireContext().getDrawable(when (recording) {
                 true -> R.drawable.ic_stop_white_24dp
