@@ -1,6 +1,7 @@
 package com.moovel.gpsrecorderplayer.ui
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.moovel.gpsrecorderplayer.R
@@ -19,12 +20,10 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) startRecordsFragment()
     }
 
-    override fun onBackPressed() {
-        if (bottom_drawer?.isOpen() == true) {
-            bottom_drawer.close()
-        } else {
-            super.onBackPressed()
-        }
+    override fun onBackPressed() = when {
+        bottom_drawer?.isOpen() == true -> bottom_drawer.close()
+        supportFragmentManager.findFragmentById(R.id.fragment_holder) is RecordsFragment -> super.onBackPressed()
+        else -> startRecordsFragment()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -37,25 +36,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startRecordFragment() {
-        supportFragmentManager
-                .beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.fragment_holder, RecordFragment())
-                .commit()
+        startFragment("record", { RecordFragment() })
     }
 
     fun startPlaybackFragment(bundle: Bundle) {
-        supportFragmentManager
-                .beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.fragment_holder, PlayBackFragment().apply { arguments = bundle })
-                .commit()
+        startFragment("play", { PlayBackFragment() }, bundle)
     }
 
     private fun startRecordsFragment() {
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment_holder, RecordsFragment())
+        startFragment("list", { RecordsFragment() })
+    }
+
+    private fun startFragment(tag: String, factory: () -> Fragment, args: Bundle? = null) {
+        val fragment = supportFragmentManager.findFragmentByTag(tag) ?: factory()
+
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_holder, fragment.apply { arguments = args }, tag)
                 .commit()
     }
 

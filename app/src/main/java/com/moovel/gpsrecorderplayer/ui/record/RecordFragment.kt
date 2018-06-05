@@ -83,8 +83,6 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
 
         viewModel.stopListener = { record ->
             if (record != null) {
-                // prevent going back to RecordFragment from PlayBackFragment
-                activity?.supportFragmentManager?.popBackStack()
                 mainActivity().startPlaybackFragment(Bundle().apply { putParcelable("record", record) })
             } else {
                 // TODO handle record failed
