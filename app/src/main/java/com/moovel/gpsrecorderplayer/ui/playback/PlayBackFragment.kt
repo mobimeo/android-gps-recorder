@@ -26,6 +26,6 @@ class PlayBackFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as MainActivity).enableBackButton(true)
         val record = arguments?.getParcelable<Record>("record")
-        record_name.text = record?.name
+        record_name.setText(record?.name)
     }
 }

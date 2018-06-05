@@ -13,10 +13,12 @@ import android.os.IBinder
 import com.moovel.gpsrecorderplayer.repo.IRecordService
 import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.repo.RecordService
+import com.moovel.gpsrecorderplayer.repo.Signal
 
 class RecordViewModel(application: Application) : AndroidViewModel(application) {
 
     val locationLiveData: LiveData<Location> = MediatorLiveData<Location>()
+    val signalLiveData: LiveData<Signal> = MediatorLiveData<Signal>()
     val recordingLiveData: LiveData<Boolean> = MediatorLiveData<Boolean>()
     var stopListener: ((record: Record?) -> Unit)? = null
 
@@ -31,6 +33,9 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
 
                 val live = locationLiveData as MediatorLiveData<Location>
                 live.addSource(service.locations(), { value -> live.value = value })
+
+                val signal = signalLiveData as MediatorLiveData<Signal>
+                signal.addSource(service.signal(), { value -> signal.value = value })
 
                 val recording = recordingLiveData as MediatorLiveData<Boolean>
                 recording.addSource(service.isRecording(), { value -> recording.value = value })

@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.repo.Signal
 import com.moovel.gpsrecorderplayer.utils.format
 import kotlinx.android.synthetic.main.view_location.view.*
 
@@ -16,10 +17,11 @@ class LocationView @JvmOverloads constructor(
         defStyleRes: Int = 0) :
         FrameLayout(ctx, attrs, defStyleAttr, defStyleRes) {
 
+    private val na = context.getString(R.string.record_not_available)
+
     var location: Location? = null
         set(value) {
             field = value
-            val na = context.getString(R.string.record_not_available)
             latitude.text = value?.latitude?.format(5) ?: na
             longitude.text = value?.longitude?.format(5) ?: na
             speed.text = value?.speed?.takeIf { value.hasSpeed() }?.format() ?: na
@@ -29,6 +31,14 @@ class LocationView @JvmOverloads constructor(
             bearing_acc.text = value?.bearingAccuracyDegrees?.takeIf { value.hasBearingAccuracy() }?.format() ?: na
             vertical_acc.text = value?.verticalAccuracyMeters?.takeIf { value.hasVerticalAccuracy() }?.format() ?: na
             speed_acc.text = value?.speedAccuracyMetersPerSecond?.takeIf { value.hasSpeedAccuracy() }?.format() ?: na
+        }
+
+    var signal: Signal? = null
+        set(value) {
+            field = value
+            signal_type.text = value?.networkTypeName ?: na
+            signal_class.text = value?.networkClassName ?: na
+            signal_strength.text = value?.levelName ?: na
         }
 
     init {

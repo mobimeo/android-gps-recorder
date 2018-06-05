@@ -8,39 +8,50 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.record.RecordFragment">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MapsActivity" />
-
-    <LinearLayout
-        android:id="@+id/top_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff"
-        android:elevation="8dp"
-        android:fitsSystemWindows="true"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/record_name"
+        <LinearLayout
+            android:id="@+id/top_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:ellipsize="end"
-            android:lines="1"
-            android:paddingHorizontal="16dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
-            android:textSize="32sp"
-            tools:text="25.05.2018 Aufnahme 1" />
+            android:background="#fff"
+            android:elevation="8dp"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical">
 
-        <com.moovel.gpsrecorderplayer.ui.widget.LocationView
-            android:id="@+id/location_view"
+            <EditText
+                android:id="@+id/record_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:ellipsize="end"
+                android:enabled="false"
+                android:backgroundTint="#fff"
+                android:lines="1"
+                android:textColor="#333"
+                android:paddingHorizontal="16dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
+                android:textSize="32sp"
+                tools:text="25.05.2018 Aufnahme 1" />
+
+            <com.moovel.gpsrecorderplayer.ui.widget.LocationView
+                android:id="@+id/location_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:context=".MapsActivity" />
 
     </LinearLayout>
 

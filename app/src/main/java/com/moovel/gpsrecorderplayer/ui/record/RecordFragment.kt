@@ -1,5 +1,6 @@
 package com.moovel.gpsrecorderplayer.ui.record
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.location.Location
@@ -13,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.repo.Signal
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import com.moovel.gpsrecorderplayer.utils.dpToPx
 import com.moovel.gpsrecorderplayer.utils.latLng
@@ -50,6 +52,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         updatePadding()
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
         updatePadding()
@@ -67,6 +70,8 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
             location_view.location = location
             googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, 17f))
         })
+
+        viewModel.signalLiveData.observe(this, Observer<Signal> { signal -> location_view.signal = signal })
 
         record_button.setOnClickListener { viewModel.onClickButton(edit_record_name.editableText.toString()) }
         viewModel.recordingLiveData.observe(this, Observer<Boolean> { recording ->
