@@ -11,6 +11,7 @@ import android.os.Binder
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
+import android.os.SystemClock
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
@@ -175,7 +176,7 @@ class PlayService : Service(), IPlayService {
 
             val l = Location("MOCK")
             l.time = System.currentTimeMillis()
-            l.elapsedRealtimeNanos = System.nanoTime()
+            l.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
             l.latitude = stamp.latitude
             l.longitude = stamp.longitude
             stamp.altitude?.let { l.altitude = it }
