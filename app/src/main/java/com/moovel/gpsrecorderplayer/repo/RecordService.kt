@@ -61,6 +61,7 @@ class RecordService : Service(), IRecordService {
     private var record: Record? = null
     private var index = 0L
     private val location by lazy { LocationLiveData(this) }
+    private val recording = MutableLiveData<Boolean>()
     private val polyline = MutableLiveData<List<LatLng>>()
     private var polylineList = emptyList<LatLng>()
         set(value) {
@@ -71,7 +72,7 @@ class RecordService : Service(), IRecordService {
     private val locationObserver = Observer<Location> {
         it?.let {
             polylineList = polylineList.plus(LatLng(it.latitude, it.longitude))
-            record?.insertPositionAsync(index, it)
+            record?.insertPositionAsync(index++, it)
         }
     }
 
@@ -89,13 +90,16 @@ class RecordService : Service(), IRecordService {
                 .setContentText(getString(R.string.recording))
                 .build()
         startForeground(NOTIFICATION_ID, notification)
+        recording.value = true
     }
 
     override fun stop() {
         location.removeObserver(locationObserver)
         polylineList = emptyList()
+        record?.complete()
         record = null
         index = 0L
+        recording.value = false
     }
 
     override fun current(): Record? {
@@ -116,6 +120,9 @@ class RecordService : Service(), IRecordService {
         return location
     }
 
+    override fun isRecording(): LiveData<Boolean> {
+        return recording
+    }
 
     private fun Record.insertRecordAsync() {
         handler.post { recordsDao.insert(this) }

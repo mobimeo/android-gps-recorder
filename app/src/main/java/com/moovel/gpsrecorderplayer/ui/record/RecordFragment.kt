@@ -66,7 +66,16 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
             location_view.location = location
             googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, 17f))
         })
+
+        record_button.setOnClickListener { viewModel.onClickButton() }
+        viewModel.recordingLiveData.observe(this, Observer<Boolean> { recording ->
+            record_button.setImageDrawable(requireContext().getDrawable(when (recording) {
+                true -> R.drawable.ic_stop_white_24dp
+                else -> R.drawable.ic_fiber_manual_record_white_24dp
+            }))
+        })
     }
+
 
     private fun updatePadding() {
         googleMap?.setPadding(0, 0, 0, 56.dpToPx())

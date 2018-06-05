@@ -8,8 +8,6 @@ interface IRecordService : LocationSource {
     fun stop()
     fun current(): Record?
     fun rename(name: String)
-    fun isRecording(): Boolean {
-        return current() != null
-    }
+    fun isRecording(): LiveData<Boolean>
     fun polyline(): LiveData<List<LatLng>>
 }
