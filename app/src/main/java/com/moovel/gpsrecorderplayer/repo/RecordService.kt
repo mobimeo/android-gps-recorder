@@ -26,40 +26,55 @@ class RecordService : Service(), IRecordService {
             return (binder as RecordBinder).service
         }
 
-        private fun Location.toPosition(
-                recordId: String,
-                index: Long,
-                created: Long = System.currentTimeMillis()
-        ): Position {
-            return Position(recordId,
-                    index,
-                    created,
-                    provider,
-                    time,
-                    elapsedRealtimeNanos,
-                    latitude,
-                    longitude,
-                    if (hasAltitude()) altitude else null,
-                    if (hasSpeed()) speed else null,
-                    if (hasBearing()) bearing else null,
-                    if (hasAccuracy()) accuracy else null,
-                    if (hasVerticalAccuracy()) verticalAccuracyMeters else null,
-                    if (hasSpeedAccuracy()) speedAccuracyMetersPerSecond else null,
-                    if (hasBearingAccuracy()) bearingAccuracyDegrees else null
-            )
-        }
+        private fun Location.toStamp(recordId: String, index: Int, created: Long = System.currentTimeMillis()) =
+                LocationStamp(recordId,
+                        index,
+                        created,
+                        provider,
+                        time,
+                        elapsedRealtimeNanos,
+                        latitude,
+                        longitude,
+                        if (hasAltitude()) altitude else null,
+                        if (hasSpeed()) speed else null,
+                        if (hasBearing()) bearing else null,
+                        if (hasAccuracy()) accuracy else null,
+                        if (hasVerticalAccuracy()) verticalAccuracyMeters else null,
+                        if (hasSpeedAccuracy()) speedAccuracyMetersPerSecond else null,
+                        if (hasBearingAccuracy()) bearingAccuracyDegrees else null
+                )
+
+        private fun Signal.toStamp(recordId: String, index: Int, created: Long = System.currentTimeMillis()) =
+                SignalStamp(recordId,
+                        index,
+                        created,
+                        networkType,
+                        serviceState,
+                        gsmSignalStrength,
+                        gsmBitErrorRate,
+                        cdmaDbm,
+                        cdmaEcio,
+                        evdoDbm,
+                        evdoEcio,
+                        evdoSnr,
+                        gsm,
+                        level
+                )
     }
 
     private val db = RecordsDatabase.getInstance(this)
     private val recordsDao = db.recordsDao()
-    private val positionsDao = db.positionsDao()
+    private val locationsDao = db.locationsDao()
+    private val signalsDao = db.signalsDao()
 
     private val handlerThread = HandlerThread("RecordService")
     private val handler = Handler(handlerThread.apply { start() }.looper)
     private val mainHandler = Handler()
 
     private var record: Record? = null
-    private var index = 0L
+    private var locationIndex = 0
+    private var signalIndex = 0
+    private val signal by lazy { SignalLiveData(this) }
     private val location by lazy { LocationLiveData(this) }
     private val recording = MutableLiveData<Boolean>()
     private val polyline = MutableLiveData<List<LatLng>>()
@@ -72,7 +87,13 @@ class RecordService : Service(), IRecordService {
     private val locationObserver = Observer<Location> {
         it?.let {
             polylineList = polylineList.plus(LatLng(it.latitude, it.longitude))
-            record?.insertPositionAsync(index++, it)
+            record?.insertLocationAsync(locationIndex++, it)
+        }
+    }
+
+    private val signalObserver = Observer<Signal> {
+        it?.let {
+            record?.insertSignalAsync(signalIndex++, it)
         }
     }
 
@@ -86,6 +107,7 @@ class RecordService : Service(), IRecordService {
         record = Record(UUID.randomUUID().toString(), name)
         record?.insertRecordAsync()
         location.observeForever(locationObserver)
+        signal.observeForever(signalObserver)
         val notification = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentText(getString(R.string.recording))
                 .build()
@@ -95,10 +117,12 @@ class RecordService : Service(), IRecordService {
 
     override fun stop() {
         location.removeObserver(locationObserver)
+        signal.removeObserver(signalObserver)
         polylineList = emptyList()
         record?.complete()
         record = null
-        index = 0L
+        locationIndex = 0
+        signalIndex = 0
         recording.value = false
     }
 
@@ -120,6 +144,10 @@ class RecordService : Service(), IRecordService {
         return location
     }
 
+    override fun signal(): LiveData<Signal> {
+        return signal
+    }
+
     override fun isRecording(): LiveData<Boolean> {
         return recording
     }
@@ -132,8 +160,12 @@ class RecordService : Service(), IRecordService {
         handler.post { recordsDao.update(this) }
     }
 
-    private fun Record.insertPositionAsync(index: Long, location: Location) {
-        handler.post { positionsDao.insert(location.toPosition(this.id, index)) }
+    private fun Record.insertLocationAsync(index: Int, location: Location) {
+        handler.post { locationsDao.insert(location.toStamp(this.id, index)) }
+    }
+
+    private fun Record.insertSignalAsync(index: Int, signal: Signal) {
+        handler.post { signalsDao.insert(signal.toStamp(this.id, index)) }
     }
 
     private fun Record.complete() {

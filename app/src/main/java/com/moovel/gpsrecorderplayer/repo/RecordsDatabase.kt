@@ -5,14 +5,16 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 
-@Database(version = 1,
+@Database(version = 3,
         entities = [
             Record::class,
-            Position::class
+            LocationStamp::class,
+            SignalStamp::class
         ])
 internal abstract class RecordsDatabase : RoomDatabase() {
     abstract fun recordsDao(): RecordsDao
-    abstract fun positionsDao(): PositionsDao
+    abstract fun locationsDao(): LocationsDao
+    abstract fun signalsDao(): SignalsDao
 
     companion object {
         private var instance: RecordsDatabase? = null
@@ -21,7 +23,9 @@ internal abstract class RecordsDatabase : RoomDatabase() {
             if (instance != null) return instance!!
             synchronized(Companion) {
                 if (instance == null) {
-                    instance = Room.databaseBuilder(context, RecordsDatabase::class.java, "db").build()
+                    instance = Room.databaseBuilder(context, RecordsDatabase::class.java, "db")
+                            .fallbackToDestructiveMigration() // FIXME remove after schema is fixed
+                            .build()
                 }
 
                 return instance!!

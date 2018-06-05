@@ -6,7 +6,6 @@ import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
 import android.location.Location
 import android.os.Parcelable
-import android.telephony.SignalStrength
 import kotlinx.android.parcel.Parcelize
 
 @Entity(
@@ -23,15 +22,15 @@ data class Record(
 ) : Parcelable
 
 @Entity(
-        tableName = "positions",
+        tableName = "locations",
         primaryKeys = ["index", "record_id"],
         indices = [Index("record_id"), Index("record_id", "index")],
         foreignKeys = [ForeignKey(entity = Record::class, parentColumns = ["id"], childColumns = ["record_id"], onDelete = ForeignKey.CASCADE)]
 )
-data class Position(
+data class LocationStamp(
         @ColumnInfo(name = "record_id")
         val recordId: String,
-        val index: Long,
+        val index: Int,
         val created: Long = System.currentTimeMillis(),
 
         val provider: String,
@@ -48,7 +47,7 @@ data class Position(
         val bearingAccuracyDegrees: Float? = null
 )
 
-private fun Position.toLocation(): Location {
+private fun LocationStamp.toLocation(): Location {
     val l = Location(provider)
     l.time = time
     l.elapsedRealtimeNanos = elapsedRealtimeNanos
@@ -63,15 +62,29 @@ private fun Position.toLocation(): Location {
     verticalAccuracyMeters?.let { l.verticalAccuracyMeters = it }
     return l
 }
-//
-//@Entity(
-//        tableName = "signals",
-//        primaryKeys = ["index", "record_id"],
-//        foreignKeys = [ForeignKey(entity = Record::class, parentColumns = ["id"], childColumns = ["record_id"], onDelete = ForeignKey.CASCADE)]
-//)
-//data class Signal(
-//        val index: Int,
-//        val recordId: String,
-//        val created: Long = System.currentTimeMillis(),
-//        val networkType: Int,
-//)
+
+@Entity(
+        tableName = "signals",
+        primaryKeys = ["index", "record_id"],
+        foreignKeys = [ForeignKey(entity = Record::class, parentColumns = ["id"], childColumns = ["record_id"], onDelete = ForeignKey.CASCADE)]
+)
+data class SignalStamp(
+        @ColumnInfo(name = "record_id")
+        val recordId: String,
+        val index: Int,
+        val created: Long = System.currentTimeMillis(),
+
+        val networkType: Int,
+
+        val serviceState: Int,
+
+        val gsmSignalStrength: Int,
+        val gsmBitErrorRate: Int,
+        val cdmaDbm: Int,
+        val cdmaEcio: Int,
+        val evdoDbm: Int,
+        val evdoEcio: Int,
+        val evdoSnr: Int,
+        val gsm: Boolean = false,
+        val level: Int
+)

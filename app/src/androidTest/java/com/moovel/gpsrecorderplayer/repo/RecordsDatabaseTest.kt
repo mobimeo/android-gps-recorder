@@ -22,24 +22,24 @@ class RecordsDatabaseTest {
     fun testAddGetRemove() {
         // add
         db.recordsDao().insert(Record("id1", "first"))
-        db.positionsDao().insert((0..99).map { position("id1", it.toLong()) })
+        db.locationsDao().insert((0..99).map { position("id1", it.toLong()) })
 
         // get
         assertTrue(db.recordsDao().get().isNotEmpty())
         assertEquals(1, db.recordsDao().get().size)
-        assertTrue(db.positionsDao().get().isNotEmpty())
-        assertEquals(100, db.positionsDao().get().size)
+        assertTrue(db.locationsDao().get().isNotEmpty())
+        assertEquals(100, db.locationsDao().get().size)
 
         // remove
         db.recordsDao().delete(db.recordsDao().get())
-        db.positionsDao().delete(db.positionsDao().get())
+        db.locationsDao().delete(db.locationsDao().get())
 
         assertTrue(db.recordsDao().get().isEmpty())
-        assertTrue(db.positionsDao().get().isEmpty())
+        assertTrue(db.locationsDao().get().isEmpty())
     }
 
-    private fun position(recordId: String, index: Long): Position {
-        return Position(recordId,
+    private fun position(recordId: String, index: Long): LocationStamp {
+        return LocationStamp(recordId,
                 index,
                 System.currentTimeMillis(),
                 "mock",
