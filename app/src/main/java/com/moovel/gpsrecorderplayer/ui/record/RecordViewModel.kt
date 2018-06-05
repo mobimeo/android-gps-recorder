@@ -25,7 +25,7 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
     private lateinit var service: IRecordService
 
     init {
-        val recordServiceIntent = Intent(application.applicationContext, RecordService::class.java)
+        val recordServiceIntent = Intent(application, RecordService::class.java)
         application.bindService(recordServiceIntent, object : ServiceConnection {
             override fun onServiceDisconnected(p0: ComponentName?) {}
             override fun onServiceConnected(p0: ComponentName, binder: IBinder) {

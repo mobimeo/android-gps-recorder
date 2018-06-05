@@ -12,5 +12,8 @@ internal interface LocationsDao : BaseDao<LocationStamp> {
     fun getByRecordId(recordId: String): List<LocationStamp>
 
     @Query("SELECT * from locations WHERE record_id == :recordId AND `index` == :index")
-    fun getByRecordIdAndId(recordId: String, index: Long): LocationStamp?
+    fun getByRecordIdAndIndex(recordId: String, index: Int): LocationStamp?
+
+    @Query("SELECT latitude, longitude from locations WHERE record_id == :recordId")
+    fun getPolyline(recordId: String): List<Position>
 }

@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 
-@Database(version = 3,
+@Database(version = 5,
         entities = [
             Record::class,
             LocationStamp::class,

@@ -12,5 +12,5 @@ internal interface SignalsDao : BaseDao<SignalStamp> {
     fun getByRecordId(recordId: String): List<SignalStamp>
 
     @Query("SELECT * from signals WHERE record_id == :recordId AND `index` == :index")
-    fun getByRecordIdAndId(recordId: String, index: Long): SignalStamp?
+    fun getByRecordIdAndIndex(recordId: String, index: Int): SignalStamp?
 }

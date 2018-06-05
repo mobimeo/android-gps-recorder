@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -36,6 +37,7 @@
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
         <service android:name=".repo.RecordService" />
+        <service android:name=".repo.PlayService" />
     </application>
 
 </manifest>

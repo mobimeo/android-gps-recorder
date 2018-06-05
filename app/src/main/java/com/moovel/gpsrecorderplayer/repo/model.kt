@@ -4,16 +4,14 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
-import android.location.Location
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Entity(
         tableName = "records",
         primaryKeys = ["id"],
-        indices = [Index("id")]
+        indices = [Index("id"), Index("name")]
 )
-
 @Parcelize
 data class Record(
         val id: String,
@@ -47,25 +45,10 @@ data class LocationStamp(
         val bearingAccuracyDegrees: Float? = null
 )
 
-private fun LocationStamp.toLocation(): Location {
-    val l = Location(provider)
-    l.time = time
-    l.elapsedRealtimeNanos = elapsedRealtimeNanos
-    l.latitude = latitude
-    l.longitude = longitude
-    altitude?.let { l.altitude = it }
-    speed?.let { l.speed = it }
-    bearing?.let { l.bearing = it }
-    bearingAccuracyDegrees?.let { l.bearingAccuracyDegrees = it }
-    speedAccuracyMetersPerSecond?.let { l.speedAccuracyMetersPerSecond = it }
-    horizontalAccuracyMeters?.let { l.accuracy = it }
-    verticalAccuracyMeters?.let { l.verticalAccuracyMeters = it }
-    return l
-}
-
 @Entity(
         tableName = "signals",
         primaryKeys = ["index", "record_id"],
+        indices = [Index("record_id"), Index("record_id", "index")],
         foreignKeys = [ForeignKey(entity = Record::class, parentColumns = ["id"], childColumns = ["record_id"], onDelete = ForeignKey.CASCADE)]
 )
 data class SignalStamp(
@@ -74,17 +57,31 @@ data class SignalStamp(
         val index: Int,
         val created: Long = System.currentTimeMillis(),
 
+        @ColumnInfo(name = "network_type")
         val networkType: Int,
 
+        @ColumnInfo(name = "service_state")
         val serviceState: Int,
 
+        @ColumnInfo(name = "gsm_signal_strength")
         val gsmSignalStrength: Int,
+        @ColumnInfo(name = "gsm_bit_error_rate")
         val gsmBitErrorRate: Int,
+        @ColumnInfo(name = "cdma_dbm")
         val cdmaDbm: Int,
+        @ColumnInfo(name = "cdma_ecio")
         val cdmaEcio: Int,
+        @ColumnInfo(name = "evdo_dbm")
         val evdoDbm: Int,
+        @ColumnInfo(name = "evdo_ecio")
         val evdoEcio: Int,
+        @ColumnInfo(name = "evdo_snr")
         val evdoSnr: Int,
         val gsm: Boolean = false,
         val level: Int
+)
+
+data class Position(
+        val latitude: Double,
+        val longitude: Double
 )

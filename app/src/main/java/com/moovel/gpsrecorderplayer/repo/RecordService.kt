@@ -13,6 +13,7 @@ import android.os.Binder
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
+import android.widget.Chronometer
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
 import java.util.UUID
@@ -62,10 +63,10 @@ class RecordService : Service(), IRecordService {
                 )
     }
 
-    private val db = RecordsDatabase.getInstance(this)
-    private val recordsDao = db.recordsDao()
-    private val locationsDao = db.locationsDao()
-    private val signalsDao = db.signalsDao()
+    private val db by lazy { RecordsDatabase.getInstance(applicationContext) }
+    private val recordsDao by lazy { db.recordsDao() }
+    private val locationsDao by lazy { db.locationsDao() }
+    private val signalsDao by lazy { db.signalsDao() }
 
     private val handlerThread = HandlerThread("RecordService")
     private val handler = Handler(handlerThread.apply { start() }.looper)
@@ -100,6 +101,7 @@ class RecordService : Service(), IRecordService {
     override fun onCreate() {
         super.onCreate()
         setupNotificationChannel()
+        recording.value = false
     }
 
     override fun start(name: String) {

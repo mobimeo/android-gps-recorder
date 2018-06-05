@@ -67,7 +67,7 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/record_button"
+        android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"

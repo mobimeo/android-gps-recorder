@@ -3,6 +3,7 @@ package com.moovel.gpsrecorderplayer.repo
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -22,7 +23,7 @@ class RecordsDatabaseTest {
     fun testAddGetRemove() {
         // add
         db.recordsDao().insert(Record("id1", "first"))
-        db.locationsDao().insert((0..99).map { position("id1", it.toLong()) })
+        db.locationsDao().insert((0..99).map { location("id1", it) })
 
         // get
         assertTrue(db.recordsDao().get().isNotEmpty())
@@ -38,14 +39,29 @@ class RecordsDatabaseTest {
         assertTrue(db.locationsDao().get().isEmpty())
     }
 
-    private fun position(recordId: String, index: Long): LocationStamp {
+    @Test
+    fun testGetPolyline() {
+        // add
+        val latLng = Position(10.0, 45.0)
+        db.recordsDao().insert(Record("id1", "first"))
+        db.locationsDao().insert((0..99).map { location("id1", it, latLng) })
+
+        // get
+        val polyline = db.locationsDao().getPolyline("id1")
+
+        // test
+        assertEquals(100, polyline.size)
+        polyline.forEach { assertEquals(latLng, it) }
+    }
+
+    private fun location(recordId: String, index: Int, latLng: Position = Position(48.45, 7.54)): LocationStamp {
         return LocationStamp(recordId,
                 index,
                 System.currentTimeMillis(),
                 "mock",
                 System.currentTimeMillis(),
                 System.nanoTime(),
-                48.45,
-                7.54)
+                latLng.latitude,
+                latLng.longitude)
     }
 }

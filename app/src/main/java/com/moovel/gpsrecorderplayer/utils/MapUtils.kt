@@ -28,3 +28,6 @@ fun GoogleMap.setLocationSource(source: LiveData<Location>) {
 }
 
 val Location.latLng: LatLng get() = LatLng(latitude, longitude)
+
+operator fun LatLng.component1() = latitude
+operator fun LatLng.component2() = longitude

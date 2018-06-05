@@ -47,15 +47,10 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         edit_record_name.setSelection(edit_record_name.text.length)
     }
 
-    override fun onResume() {
-        super.onResume()
-        updatePadding()
-    }
-
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-        updatePadding()
+        googleMap.setPadding(0, 0, 0, 56.dpToPx())
         googleMap.setLocationSource(viewModel.locationLiveData)
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.setAllGesturesEnabled(false)
@@ -88,11 +83,6 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
                 // TODO handle record failed
             }
         }
-    }
-
-
-    private fun updatePadding() {
-        googleMap?.setPadding(0, 0, 0, 56.dpToPx())
     }
 
     private fun mainActivity() = (activity as MainActivity)
