@@ -61,7 +61,18 @@
         app:fabAttached="true"
         app:fabCradleVerticalOffset="12dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="match_parent"
+            android:textColor="#fff"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            tools:text="3:45" />
+
+    </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/record_button"

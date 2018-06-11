@@ -70,6 +70,7 @@ class RecordService : Service(), IRecordService {
     private val handlerThread = HandlerThread("RecordService")
     private val handler = Handler(handlerThread.apply { start() }.looper)
     private val mainHandler = Handler()
+    private val ticker = TickerLiveData()
 
     private var record: Record? = null
     private var locationIndex = 0
@@ -114,6 +115,7 @@ class RecordService : Service(), IRecordService {
                 .build()
         startForeground(NOTIFICATION_ID, notification)
         recording.value = true
+        ticker.start()
     }
 
     override fun stop(): Record? {
@@ -126,6 +128,8 @@ class RecordService : Service(), IRecordService {
         locationIndex = 0
         signalIndex = 0
         recording.value = false
+        ticker.stop()
+        ticker.reset()
         return current
     }
 
@@ -137,6 +141,10 @@ class RecordService : Service(), IRecordService {
         if (record == null) throw IllegalStateException("Not recording")
         record = record?.copy(name = name)
         record?.updateRecordAsync()
+    }
+
+    override fun ticker(): LiveData<Long?> {
+        return ticker
     }
 
     override fun polyline(): LiveData<List<LatLng>> {

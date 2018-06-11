@@ -20,6 +20,7 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
     val locationLiveData: LiveData<Location> = MediatorLiveData<Location>()
     val signalLiveData: LiveData<Signal> = MediatorLiveData<Signal>()
     val recordingLiveData: LiveData<Boolean> = MediatorLiveData<Boolean>()
+    val tickerLiveData: LiveData<Long?> = MediatorLiveData<Long?>()
     var stopListener: ((record: Record?) -> Unit)? = null
 
     private lateinit var service: IRecordService
@@ -39,6 +40,9 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
 
                 val recording = recordingLiveData as MediatorLiveData<Boolean>
                 recording.addSource(service.isRecording(), { value -> recording.value = value })
+
+                val ticker = tickerLiveData as MediatorLiveData<Long?>
+                ticker.addSource(service.ticker(), { value -> ticker.value = value })
             }
         }, BIND_AUTO_CREATE)
     }

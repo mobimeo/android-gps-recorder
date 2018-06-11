@@ -10,4 +10,5 @@ interface IRecordService : LocationSource, SignalSource {
     fun rename(name: String)
     fun isRecording(): LiveData<Boolean>
     fun polyline(): LiveData<List<LatLng>>
+    fun ticker(): LiveData<Long?>
 }

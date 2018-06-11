@@ -3,8 +3,11 @@ package com.moovel.gpsrecorderplayer.ui.record
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -18,6 +21,7 @@ import com.moovel.gpsrecorderplayer.repo.Signal
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import com.moovel.gpsrecorderplayer.utils.dpToPx
 import com.moovel.gpsrecorderplayer.utils.latLng
+import com.moovel.gpsrecorderplayer.utils.observe
 import com.moovel.gpsrecorderplayer.utils.setLocationSource
 import kotlinx.android.synthetic.main.record_fragment.*
 import java.time.LocalDate
@@ -82,6 +86,11 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
             } else {
                 // TODO handle record failed
             }
+        }
+
+        viewModel.tickerLiveData.observe(this) {
+            it?.let { timer.text = DateUtils.formatElapsedTime(it) }
+            timer.visibility = if (it == null) GONE else VISIBLE
         }
     }
 

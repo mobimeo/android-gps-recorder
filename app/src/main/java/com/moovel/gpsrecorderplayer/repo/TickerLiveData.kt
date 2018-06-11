@@ -4,10 +4,22 @@ import android.os.Handler
 import android.os.SystemClock
 import androidx.lifecycle.LiveData
 
-internal class TickerLiveData : LiveData<Long>() {
+internal class TickerLiveData : LiveData<Long?>() {
     private val handler = Handler()
     private var running = false
-    private var base = 0L
+    private var base: Long? = null
+
+    init {
+        value = null
+    }
+
+    fun reset() {
+        val rerun = running
+        stop()
+        base = null
+        update()
+        if (rerun) start()
+    }
 
     fun stop() {
         running = false
@@ -24,12 +36,10 @@ internal class TickerLiveData : LiveData<Long>() {
 
     private fun dispatchTick() {
         update()
-
         if (running) handler.postDelayed(::dispatchTick, 1_000)
     }
 
     private fun update() {
-        val seconds = (SystemClock.elapsedRealtime() - base) / 1_000
-        value = seconds
+        value = base?.let { (SystemClock.elapsedRealtime() - it) / 1_000 }
     }
 }
