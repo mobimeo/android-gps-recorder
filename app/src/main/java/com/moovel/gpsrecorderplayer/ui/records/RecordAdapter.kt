@@ -8,16 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.utils.primaryTextColor
 import kotlinx.android.synthetic.main.record.view.*
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.TimeZone
+import kotlin.collections.HashSet
 
 
 class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) {
     var clickListener: ((Record) -> Unit)? = null
+    private val selectedRecords = HashSet<Record>()
 
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<Record>() {
@@ -32,21 +35,49 @@ class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
-        val viewItem = LayoutInflater.from(parent.context).inflate(R.layout.record, parent, false)
-        return RecordViewHolder(viewItem)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.record, parent, false)
+        val viewHolder = RecordViewHolder(view)
+
+        view.setOnClickListener {
+            val position = viewHolder.adapterPosition
+            if (selectedRecords.isEmpty()) {
+                clickListener?.invoke(getItem(position))
+            } else {
+                toggleSelection(position)
+            }
+        }
+
+        view.setOnLongClickListener {
+            val position = viewHolder.adapterPosition
+            toggleSelection(position)
+            true
+        }
+
+        return viewHolder
     }
 
     override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
         val record = getItem(position)
-        holder.bind(record)
+        holder.bind(record, selectedRecords.contains(record))
     }
 
-    inner class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(record: Record) {
-            itemView.name.text = record.name
+    private fun toggleSelection(position: Int) {
+        val record = getItem(position)
+        if (selectedRecords.contains(record)) selectedRecords.remove(record) else selectedRecords.add(record)
+        notifyItemChanged(position)
+    }
+
+    class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(record: Record, selected: Boolean) {
+            val ctx = itemView.context
             val time = LocalDateTime.ofInstant(Instant.ofEpochMilli(record.start), TimeZone.getDefault().toZoneId())
+            val textColor = if (selected) ctx.getColor(R.color.selectedText) else ctx.primaryTextColor()
+
+            itemView.name.text = record.name
+            itemView.name.setTextColor(textColor)
             itemView.created.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(time)
-            itemView.setOnClickListener { clickListener?.invoke(record) }
+            itemView.created.setTextColor(textColor)
+            itemView.setBackgroundColor(ctx.getColor(if (selected) R.color.colorPrimary else R.color.background))
         }
     }
 }
