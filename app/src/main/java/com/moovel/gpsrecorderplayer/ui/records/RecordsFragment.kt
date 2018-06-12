@@ -59,8 +59,12 @@ class RecordsFragment : Fragment() {
             val selection = selectedRecords?.isNotEmpty() == true
             menu_button.visibility = if (selection) GONE else VISIBLE
             clear_selection_button.visibility = if (selection) VISIBLE else GONE
+            delete_button.visibility = if (selection) VISIBLE else GONE
+            share_button.visibility = if (selection) VISIBLE else GONE
         })
 
+        delete_button.setOnClickListener { } // TODO delete selected records
+        share_button.setOnClickListener { } // TODO share selected records
         clear_selection_button.setOnClickListener { adapter.clearSelection() }
     }
 

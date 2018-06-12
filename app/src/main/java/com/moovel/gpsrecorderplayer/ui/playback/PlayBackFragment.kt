@@ -43,6 +43,8 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback {
         record_name.setText(record?.name)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        share_button.setOnClickListener {  } // TODO export current record
+        delete_button.setOnClickListener {  } // TODO delete current record
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
