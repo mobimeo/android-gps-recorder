@@ -1,7 +1,7 @@
 package com.moovel.gpsrecorderplayer.repo
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Query
+import androidx.room.Dao
+import androidx.room.Query
 
 @Dao
 internal interface LocationsDao : BaseDao<LocationStamp> {

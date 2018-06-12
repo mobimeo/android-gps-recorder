@@ -1,14 +1,14 @@
 package com.moovel.gpsrecorderplayer.ui.playback
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.content.ComponentName
 import android.content.Context.BIND_AUTO_CREATE
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.moovel.gpsrecorderplayer.repo.IPlayService
 import com.moovel.gpsrecorderplayer.repo.PlayService
 import com.moovel.gpsrecorderplayer.repo.Record

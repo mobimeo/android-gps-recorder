@@ -3,8 +3,6 @@ package com.moovel.gpsrecorderplayer.repo
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.content.Intent
 import android.location.Location
 import android.os.Binder
@@ -12,6 +10,8 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
 import android.os.SystemClock
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R

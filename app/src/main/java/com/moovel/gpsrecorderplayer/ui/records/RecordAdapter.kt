@@ -1,13 +1,13 @@
 package com.moovel.gpsrecorderplayer.ui.records
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.support.v7.recyclerview.extensions.ListAdapter
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.utils.primaryTextColor
@@ -17,12 +17,13 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle.MEDIUM
 import java.util.TimeZone
-import kotlin.collections.HashSet
 
 class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) {
     var clickListener: ((Record) -> Unit)? = null
     private val selectedLiveData = MutableLiveData<Set<Record>>()
     private val selectedRecords = HashSet<Record>()
+
+    val selection: Set<Record> get() = selectedRecords
 
     companion object {
         private val DIFF = object : DiffUtil.ItemCallback<Record>() {

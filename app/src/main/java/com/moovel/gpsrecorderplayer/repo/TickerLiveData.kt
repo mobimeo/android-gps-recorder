@@ -1,8 +1,8 @@
 package com.moovel.gpsrecorderplayer.repo
 
-import android.arch.lifecycle.LiveData
 import android.os.Handler
 import android.os.SystemClock
+import androidx.lifecycle.LiveData
 
 internal class TickerLiveData : LiveData<Long>() {
     private val handler = Handler()

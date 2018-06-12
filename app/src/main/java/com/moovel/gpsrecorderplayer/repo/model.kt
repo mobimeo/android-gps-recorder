@@ -1,16 +1,16 @@
 package com.moovel.gpsrecorderplayer.repo
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.ForeignKey
-import android.arch.persistence.room.Index
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import kotlinx.android.parcel.Parcelize
 
 @Entity(
         tableName = "records",
         primaryKeys = ["id"],
-        indices = [Index("id"), Index("name")]
+        indices = [(Index("id")), Index("name")]
 )
 @Parcelize
 data class Record(
@@ -23,7 +23,7 @@ data class Record(
         tableName = "locations",
         primaryKeys = ["index", "record_id"],
         indices = [Index("record_id"), Index("record_id", "index")],
-        foreignKeys = [ForeignKey(entity = Record::class, parentColumns = ["id"], childColumns = ["record_id"], onDelete = ForeignKey.CASCADE)]
+        foreignKeys = [(ForeignKey(entity = Record::class, parentColumns = ["id"], childColumns = ["record_id"], onDelete = ForeignKey.CASCADE))]
 )
 data class LocationStamp(
         @ColumnInfo(name = "record_id")

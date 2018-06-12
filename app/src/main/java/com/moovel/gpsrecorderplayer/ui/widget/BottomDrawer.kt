@@ -3,7 +3,6 @@ package com.moovel.gpsrecorderplayer.ui.widget
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
-import android.support.annotation.ColorInt
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_DOWN
@@ -13,6 +12,7 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.RelativeLayout
+import androidx.annotation.ColorInt
 import com.moovel.gpsrecorderplayer.utils.dpToPx
 
 class BottomDrawer @JvmOverloads constructor(

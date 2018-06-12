@@ -1,8 +1,8 @@
 package com.moovel.gpsrecorderplayer.utils
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
 import android.location.Location
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.LocationSource
 import com.google.android.gms.maps.model.LatLng

@@ -1,12 +1,12 @@
 package com.moovel.gpsrecorderplayer.ui.playback
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -43,8 +43,8 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback {
         record_name.setText(record?.name)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        share_button.setOnClickListener {  } // TODO export current record
-        delete_button.setOnClickListener {  } // TODO delete current record
+        share_button.setOnClickListener { } // TODO export current record
+        delete_button.setOnClickListener { } // TODO delete current record
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

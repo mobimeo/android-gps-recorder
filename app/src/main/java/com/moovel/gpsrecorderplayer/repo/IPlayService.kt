@@ -1,6 +1,6 @@
 package com.moovel.gpsrecorderplayer.repo
 
-import android.arch.lifecycle.LiveData
+import androidx.lifecycle.LiveData
 import com.google.android.gms.maps.model.LatLng
 
 interface IPlayService : LocationSource, SignalSource {

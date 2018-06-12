@@ -1,11 +1,11 @@
 package com.moovel.gpsrecorderplayer.repo
 
-import android.arch.lifecycle.LiveData
 import android.content.Context
 import android.telephony.PhoneStateListener
 import android.telephony.ServiceState
 import android.telephony.SignalStrength
 import android.telephony.TelephonyManager
+import androidx.lifecycle.LiveData
 
 internal class SignalLiveData(context: Context) : LiveData<Signal>() {
 

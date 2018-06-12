@@ -1,9 +1,9 @@
 package com.moovel.gpsrecorderplayer.ui
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.ui.playback.PlayBackFragment
 import com.moovel.gpsrecorderplayer.ui.record.RecordFragment
