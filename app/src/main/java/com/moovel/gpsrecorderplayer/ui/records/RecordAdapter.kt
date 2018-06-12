@@ -1,5 +1,7 @@
 package com.moovel.gpsrecorderplayer.ui.records
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.support.v7.recyclerview.extensions.ListAdapter
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
@@ -13,14 +15,13 @@ import kotlinx.android.synthetic.main.record.view.*
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.time.format.FormatStyle.MEDIUM
 import java.util.TimeZone
 import kotlin.collections.HashSet
 
-
 class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) {
     var clickListener: ((Record) -> Unit)? = null
+    private val selectedLiveData = MutableLiveData<Set<Record>>()
     private val selectedRecords = HashSet<Record>()
 
     companion object {
@@ -33,6 +34,16 @@ class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) 
                 return oldItem == newItem
             }
         }
+    }
+
+    inner class ClearDiff(val selected: Collection<Record>) : DiffUtil.Callback() {
+        override fun areItemsTheSame(old: Int, new: Int): Boolean = old == new
+
+        override fun getOldListSize(): Int = itemCount
+
+        override fun getNewListSize(): Int = itemCount
+
+        override fun areContentsTheSame(old: Int, new: Int): Boolean = !selected.contains(getItem(new))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
@@ -62,10 +73,20 @@ class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) 
         holder.bind(record, selectedRecords.contains(record))
     }
 
+    fun clearSelection() {
+        val diff = DiffUtil.calculateDiff(ClearDiff(selectedRecords), false)
+        selectedRecords.clear()
+        diff.dispatchUpdatesTo(this)
+        selectedLiveData.value = selectedRecords
+    }
+
+    fun selectedLiveData(): LiveData<Set<Record>> = selectedLiveData
+
     private fun toggleSelection(position: Int) {
         val record = getItem(position)
         if (selectedRecords.contains(record)) selectedRecords.remove(record) else selectedRecords.add(record)
         notifyItemChanged(position)
+        selectedLiveData.value = selectedRecords
     }
 
     class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -82,7 +103,8 @@ class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) 
             itemView.icon.setImageDrawable(ctx.getDrawable(
                     if (selected) R.drawable.ic_check_primary_24dp else R.drawable.ic_location_on_white_24dp))
             itemView.icon.background = ctx.getDrawable(
-                    if(selected) R.drawable.list_circle_white else R.drawable.list_circle_primary)
+                    if (selected) R.drawable.list_circle_white else R.drawable.list_circle_primary)
         }
     }
 }
+

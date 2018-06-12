@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.moovel.gpsrecorderplayer.R
@@ -52,6 +54,14 @@ class RecordsFragment : Fragment() {
         open_source_menu_item.setOnClickListener {
             startActivity(Intent(context, OssLicensesMenuActivity::class.java)) //FIXME use nav controller
         }
+
+        adapter.selectedLiveData().observe(this, Observer<Set<Record>> { selectedRecords ->
+            val selection = selectedRecords?.isNotEmpty() == true
+            menu_button.visibility = if (selection) GONE else VISIBLE
+            clear_selection_button.visibility = if (selection) VISIBLE else GONE
+        })
+
+        clear_selection_button.setOnClickListener { adapter.clearSelection() }
     }
 
     private fun hasLocationPermission() =

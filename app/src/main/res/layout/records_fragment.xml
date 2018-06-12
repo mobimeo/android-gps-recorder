@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="@color/background"
+    android:fitsSystemWindows="true"
     tools:context=".ui.MainActivity">
 
     <android.support.v7.widget.RecyclerView
@@ -66,6 +66,17 @@
             android:focusable="true"
             android:padding="16dp"
             android:src="@drawable/ic_menu_white_24dp" />
+
+        <ImageView
+            android:id="@+id/clear_selection_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp"
+            android:src="@drawable/ic_clear_white_24dp"
+            android:visibility="gone" />
 
     </android.support.design.bottomappbar.BottomAppBar>
 
