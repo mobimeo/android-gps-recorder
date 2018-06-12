@@ -14,6 +14,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.FormatStyle.MEDIUM
 import java.util.TimeZone
 import kotlin.collections.HashSet
 
@@ -75,9 +76,13 @@ class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) 
 
             itemView.name.text = record.name
             itemView.name.setTextColor(textColor)
-            itemView.created.text = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).format(time)
+            itemView.created.text = DateTimeFormatter.ofLocalizedDateTime(MEDIUM).format(time)
             itemView.created.setTextColor(textColor)
             itemView.setBackgroundColor(ctx.getColor(if (selected) R.color.colorPrimary else R.color.background))
+            itemView.icon.setImageDrawable(ctx.getDrawable(
+                    if (selected) R.drawable.ic_check_primary_24dp else R.drawable.ic_location_on_white_24dp))
+            itemView.icon.background = ctx.getDrawable(
+                    if(selected) R.drawable.list_circle_white else R.drawable.list_circle_primary)
         }
     }
 }
