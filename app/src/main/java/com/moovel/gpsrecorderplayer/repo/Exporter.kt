@@ -14,27 +14,73 @@ object Exporter {
     private const val TYPE = "test/plain"
     private const val FILE_PROVIDER_AUTHORITY = "com.moovel.gpsrecorderplayer.fileprovider"
 
+    private val LOCATION_ROWS = arrayListOf<CsvColumn<LocationStamp>>(
+            CsvColumn("index") { it.index },
+            CsvColumn("created") { it.created },
+            CsvColumn("provider") { it.provider },
+            CsvColumn("time") { it.time },
+            CsvColumn("latitude") { it.latitude },
+            CsvColumn("longitude") { it.longitude },
+            CsvColumn("altitude") { it.altitude },
+            CsvColumn("speed") { it.speed },
+            CsvColumn("bearing") { it.bearing },
+            CsvColumn("horizontalAccuracyMeters") { it.horizontalAccuracyMeters },
+            CsvColumn("verticalAccuracyMeters") { it.verticalAccuracyMeters },
+            CsvColumn("speedAccuracyMetersPerSecond") { it.speedAccuracyMetersPerSecond },
+            CsvColumn("bearingAccuracyDegrees") { it.bearingAccuracyDegrees })
+
+    private val SIGNAL_ROWS = arrayListOf<CsvColumn<SignalStamp>>(
+            CsvColumn("index") { it.index },
+            CsvColumn("created") { it.created },
+            CsvColumn("networkType") { it.networkType },
+            CsvColumn("networkTypeName") { Signal.networkTypeName(it.networkType) },
+            CsvColumn("networkClassName") { Signal.networkClassName(it.networkType) },
+            CsvColumn("serviceState") { it.serviceState },
+            CsvColumn("serviceStateName") { Signal.serviceStateName(it.serviceState) },
+            CsvColumn("gsmSignalStrength") { it.gsmSignalStrength },
+            CsvColumn("gsmBitErrorRate") { it.gsmBitErrorRate },
+            CsvColumn("cdmaDbm") { it.cdmaDbm },
+            CsvColumn("cdmaEcio") { it.cdmaEcio },
+            CsvColumn("evdoDbm") { it.evdoDbm },
+            CsvColumn("evdoEcio") { it.evdoEcio },
+            CsvColumn("evdoSnr") { it.evdoSnr },
+            CsvColumn("gsm") { it.gsm },
+            CsvColumn("level") { it.level },
+            CsvColumn("levelName") { Signal.levelName(it.level) })
+
     fun export(context: Context, records: Collection<Record>, result: (Intent?, Throwable?) -> Unit) {
         val handler = Handler()
 
-        val recordsPath = File(context.filesDir, "records")
-        recordsPath.mkdir()
+        val recordsPath = File(context.filesDir, "records").apply { mkdir() }
 
         val db = RecordsDatabase.getInstance(context)
         val locationsDao = db.locationsDao()
+        val signalsDao = db.signalsDao()
 
         async {
             records
-                    .mapNotNull { record ->
-                        val file = File(recordsPath, "${record.id}.csv")
-                        val locations = locationsDao.getByRecordId(record.id)
+                    .flatMap { record ->
+                        val name = record.name.replace(Regex("([^a-zA-Z0-9])+"), "_")
+                                .takeIf { it.isNotBlank() } ?: record.id
+                        val recordPath = File(recordsPath, record.id).apply { mkdir() }
 
-                        if (locations.isNotEmpty()) {
-                            exportLocations(file, locations)
-                            file
-                        } else {
-                            null
-                        }
+                        val locationsFile = locationsDao.getByRecordId(record.id)
+                                .takeIf { it.isNotEmpty() }
+                                ?.let {
+                                    val file = File(recordPath, "${name}_locations.csv")
+                                    exportLocations(file, it)
+                                    file
+                                }
+
+                        val signalsFile = signalsDao.getByRecordId(record.id)
+                                .takeIf { it.isNotEmpty() }
+                                ?.let {
+                                    val file = File(recordPath, "${name}_signals.csv")
+                                    exportSignals(file, it)
+                                    file
+                                }
+
+                        listOfNotNull(locationsFile, signalsFile)
                     }
                     .map { FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, it) }
                     .let { ArrayList(it) }
@@ -57,28 +103,21 @@ object Exporter {
         }
     }
 
-    private fun exportLocations(file: File, locations: Collection<LocationStamp>) {
-        val rows = listOf<CsvColumn<LocationStamp>>(
-                CsvColumn("index") { it.index },
-                CsvColumn("created") { it.created },
-                CsvColumn("provider") { it.provider },
-                CsvColumn("time") { it.time },
-                CsvColumn("latitude") { it.latitude },
-                CsvColumn("longitude") { it.longitude },
-                CsvColumn("altitude") { it.altitude },
-                CsvColumn("speed") { it.speed },
-                CsvColumn("horizontalAccuracyMeters") { it.horizontalAccuracyMeters },
-                CsvColumn("verticalAccuracyMeters") { it.verticalAccuracyMeters },
-                CsvColumn("speedAccuracyMetersPerSecond") { it.speedAccuracyMetersPerSecond },
-                CsvColumn("bearingAccuracyDegrees") { it.bearingAccuracyDegrees })
+    private fun exportLocations(file: File, locations: Collection<LocationStamp>) = FileWriter(file).useIt {
+        append(LOCATION_ROWS.joinToString(COMMA) { it.name })
 
-        FileWriter(file).useIt {
-            append(rows.joinToString(COMMA) { it.name })
+        locations.forEach { location ->
+            append(LINE_SEPARATOR)
+            append(LOCATION_ROWS.joinToString(COMMA) { it.project(location) })
+        }
+    }
 
-            locations.forEach { location ->
-                append(LINE_SEPARATOR)
-                append(rows.joinToString(COMMA) { it.project(location) })
-            }
+    private fun exportSignals(file: File, signals: Collection<SignalStamp>) = FileWriter(file).useIt {
+        append(SIGNAL_ROWS.joinToString(COMMA) { it.name })
+
+        signals.forEach { location ->
+            append(LINE_SEPARATOR)
+            append(SIGNAL_ROWS.joinToString(COMMA) { it.project(location) })
         }
     }
 

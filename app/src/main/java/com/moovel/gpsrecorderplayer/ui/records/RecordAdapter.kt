@@ -74,11 +74,13 @@ class RecordAdapter : ListAdapter<Record, RecordAdapter.RecordViewHolder>(DIFF) 
         holder.bind(record, selectedRecords.contains(record))
     }
 
-    fun clearSelection() {
+    fun clearSelection(): Set<Record> {
+        val selection = selectedRecords.toSet()
         val diff = DiffUtil.calculateDiff(ClearDiff(selectedRecords), false)
         selectedRecords.clear()
         diff.dispatchUpdatesTo(this)
         selectedLiveData.value = selectedRecords
+        return selection
     }
 
     fun selectedLiveData(): LiveData<Set<Record>> = selectedLiveData

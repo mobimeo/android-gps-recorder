@@ -65,10 +65,12 @@ class RecordsFragment : Fragment() {
         })
 
         delete_button.setOnClickListener {
-            viewModel.remove(adapter.selection)
+            val records = adapter.clearSelection()
+            viewModel.remove(records)
         }
         share_button.setOnClickListener {
-            viewModel.export(adapter.selection) { intent, cause ->
+            val records = adapter.clearSelection()
+            viewModel.export(records) { intent, cause ->
                 if (cause != null) {
                     // FIXME improvement & lifecycle
                     val msg = cause.message ?: cause.toString()
@@ -76,8 +78,11 @@ class RecordsFragment : Fragment() {
                 }
 
                 if (intent != null) {
-                    // TODO chooser, validation & error handler
-                    startActivity(intent)
+                    // FIXME lifecycle
+                    val chooser = Intent.createChooser(intent, null)
+                    if (intent.resolveActivity(requireContext().packageManager) != null) {
+                        startActivity(chooser)
+                    }
                 }
             }
         }
