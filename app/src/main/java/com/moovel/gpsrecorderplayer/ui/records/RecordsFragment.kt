@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import com.google.android.material.snackbar.Snackbar
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.ui.MainActivity
@@ -68,8 +68,19 @@ class RecordsFragment : Fragment() {
             viewModel.remove(adapter.selection)
         }
         share_button.setOnClickListener {
+            viewModel.export(adapter.selection) { intent, cause ->
+                if (cause != null) {
+                    // FIXME improvement & lifecycle
+                    val msg = cause.message ?: cause.toString()
+                    Snackbar.make(container, msg, Snackbar.LENGTH_LONG).show()
+                }
 
-        } // TODO share selected records
+                if (intent != null) {
+                    // TODO chooser, validation & error handler
+                    startActivity(intent)
+                }
+            }
+        }
         clear_selection_button.setOnClickListener { adapter.clearSelection() }
     }
 

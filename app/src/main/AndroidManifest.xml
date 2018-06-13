@@ -38,6 +38,16 @@
 
         <service android:name=".repo.RecordService" />
         <service android:name=".repo.PlayService" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.moovel.gpsrecorderplayer.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/export_file_paths" />
+        </provider>
     </application>
 
 </manifest>
