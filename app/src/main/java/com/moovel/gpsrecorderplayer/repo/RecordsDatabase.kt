@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(version = 5,
+@Database(version = 1,
         entities = [
             Record::class,
             LocationStamp::class,
@@ -23,9 +23,7 @@ internal abstract class RecordsDatabase : RoomDatabase() {
             if (instance != null) return instance!!
             synchronized(Companion) {
                 if (instance == null) {
-                    instance = Room.databaseBuilder(context, RecordsDatabase::class.java, "db")
-                            .fallbackToDestructiveMigration() // FIXME remove after schema is fixed
-                            .build()
+                    instance = Room.databaseBuilder(context, RecordsDatabase::class.java, "db").build()
                 }
 
                 return instance!!
