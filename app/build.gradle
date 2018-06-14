@@ -13,8 +13,8 @@ android {
         applicationId "com.moovel.gpsrecorderplayer"
         minSdkVersion 26
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode System.getenv('BUILD_NUMBER') as Integer ?: 0
+        versionName "0.1.$versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         kapt {
