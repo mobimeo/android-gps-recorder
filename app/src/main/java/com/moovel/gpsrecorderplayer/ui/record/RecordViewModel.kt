@@ -9,18 +9,23 @@ import android.location.Location
 import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.repo.IRecordService
 import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.repo.RecordService
 import com.moovel.gpsrecorderplayer.repo.Signal
+import com.moovel.gpsrecorderplayer.utils.switchMap
 
 class RecordViewModel(application: Application) : AndroidViewModel(application) {
 
-    val locationLiveData: LiveData<Location> = MediatorLiveData<Location>()
-    val signalLiveData: LiveData<Signal> = MediatorLiveData<Signal>()
-    val recordingLiveData: LiveData<Boolean> = MediatorLiveData<Boolean>()
-    val tickerLiveData: LiveData<Long?> = MediatorLiveData<Long?>()
+    private val serviceLiveData: MutableLiveData<IRecordService?> = MutableLiveData()
+
+    val locationLiveData: LiveData<Location> = serviceLiveData.switchMap { it?.locations() }
+    val signalLiveData: LiveData<Signal> = serviceLiveData.switchMap { it?.signal() }
+    val recordingLiveData: LiveData<Boolean> = serviceLiveData.switchMap { it?.isRecording() }
+    val tickerLiveData: LiveData<Long?> = serviceLiveData.switchMap { it?.ticker() }
+    val polyline: LiveData<List<LatLng>> = serviceLiveData.switchMap { it?.polyline() }
     var stopListener: ((record: Record?) -> Unit)? = null
 
     private lateinit var service: IRecordService
@@ -28,21 +33,13 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
     init {
         val recordServiceIntent = Intent(application, RecordService::class.java)
         application.bindService(recordServiceIntent, object : ServiceConnection {
-            override fun onServiceDisconnected(p0: ComponentName?) {}
+            override fun onServiceDisconnected(p0: ComponentName?) {
+                serviceLiveData.value = null
+            }
+
             override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
                 service = RecordService.of(binder)
-
-                val live = locationLiveData as MediatorLiveData<Location>
-                live.addSource(service.locations(), { value -> live.value = value })
-
-                val signal = signalLiveData as MediatorLiveData<Signal>
-                signal.addSource(service.signal(), { value -> signal.value = value })
-
-                val recording = recordingLiveData as MediatorLiveData<Boolean>
-                recording.addSource(service.isRecording(), { value -> recording.value = value })
-
-                val ticker = tickerLiveData as MediatorLiveData<Long?>
-                ticker.addSource(service.ticker(), { value -> ticker.value = value })
+                serviceLiveData.value = service
             }
         }, BIND_AUTO_CREATE)
     }

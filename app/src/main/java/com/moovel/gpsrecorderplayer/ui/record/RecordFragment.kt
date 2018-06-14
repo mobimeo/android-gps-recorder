@@ -1,7 +1,6 @@
 package com.moovel.gpsrecorderplayer.ui.record
 
 import android.annotation.SuppressLint
-import android.location.Location
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -16,8 +15,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.moovel.gpsrecorderplayer.R
-import com.moovel.gpsrecorderplayer.repo.Signal
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import com.moovel.gpsrecorderplayer.utils.dpToPx
 import com.moovel.gpsrecorderplayer.utils.latLng
@@ -30,6 +31,7 @@ import java.time.format.DateTimeFormatter.ISO_DATE
 class RecordFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: RecordViewModel
     private var googleMap: GoogleMap? = null
+    private var polyline: Polyline? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,18 +61,22 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.setAllGesturesEnabled(false)
         googleMap.uiSettings.isMyLocationButtonEnabled = false
+        viewModel.polyline.value?.let {
+            if (isResumed) updatePolyline(it)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(RecordViewModel::class.java)
-        viewModel.locationLiveData.observe(this, Observer<Location> { location ->
-            if (location == null) return@Observer
+        viewModel.locationLiveData.observe(this) { location ->
             location_view.location = location
             googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, 17f))
-        })
+        }
 
-        viewModel.signalLiveData.observe(this, Observer<Signal> { signal -> location_view.signal = signal })
+        viewModel.signalLiveData.observe(this) { signal ->
+            location_view.signal = signal
+        }
 
         record_button.setOnClickListener { viewModel.onClickButton(edit_record_name.editableText.toString()) }
         viewModel.recordingLiveData.observe(this, Observer<Boolean> { recording ->
@@ -91,6 +97,19 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         viewModel.tickerLiveData.observe(this) {
             it?.let { timer.text = DateUtils.formatElapsedTime(it) }
             timer.visibility = if (it == null) GONE else VISIBLE
+        }
+
+        viewModel.polyline.observe(this) {
+            updatePolyline(it)
+        }
+    }
+
+    private fun updatePolyline(points: List<LatLng>) {
+        val map = googleMap ?: return
+        polyline?.points = points
+
+        if (polyline == null) {
+            polyline = map.addPolyline(PolylineOptions().addAll(points))
         }
     }
 
