@@ -9,6 +9,9 @@ internal interface RecordsDao : BaseDao<Record> {
     @Query("SELECT * from records")
     fun get(): List<Record>
 
+    @Query("SELECT * from records WHERE id = :id")
+    fun getById(id: String): Record?
+
     @Query("SELECT * from records")
     fun getAsLiveData(): LiveData<List<Record>>
 }
