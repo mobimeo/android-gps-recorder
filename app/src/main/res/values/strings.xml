@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">GPS Recorder &amp; Player</string>
+    <string name="universal_cancel">Cancel</string>
     <string name="records_open_source_licenses">Open source licenses</string>
     <string name="records_new_record">New record</string>
     <string name="records_record_gps_positions">Record GPS positions</string>
+    <string name="records_delete_prompt">Do you want to delete the selected records?</string>
+    <string name="playback_delete_prompt">Do you want to delete this record?</string>
+    <string name="record_delete">delete</string>
     <string name="record_new_record">%s record %d</string>
     <string name="record_latitude">Latitude</string>
     <string name="record_longitude">Longitude</string>

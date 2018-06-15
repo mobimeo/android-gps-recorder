@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">GPS Recorder &amp; Player</string>
+    <string name="universal_cancel">Abbrechen</string>
     <string name="records_open_source_licenses">Open Source-Lizenzen</string>
     <string name="records_new_record">Neue Aufzeichnung</string>
     <string name="records_record_gps_positions">GPS Positionen aufnehmen</string>
+    <string name="records_delete_prompt">Ausgewählte Aufzeichnungen entfernen?</string>
+    <string name="playback_delete_prompt">Diese Aufzeichnung entfernen?</string>
+    <string name="record_delete">entfernen</string>
     <string name="record_new_record">%s Aufnahme %d</string>
     <string name="record_latitude">Latitude</string>
     <string name="record_longitude">Longitude</string>

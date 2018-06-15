@@ -16,6 +16,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.snackbar.Snackbar
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.ui.DeleteDialog
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import com.moovel.gpsrecorderplayer.utils.dpToPx
 import com.moovel.gpsrecorderplayer.utils.latLng
@@ -23,7 +24,8 @@ import com.moovel.gpsrecorderplayer.utils.observe
 import com.moovel.gpsrecorderplayer.utils.setLocationSource
 import kotlinx.android.synthetic.main.playback_fragment.*
 
-class PlayBackFragment : Fragment(), OnMapReadyCallback {
+class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
+
     private lateinit var viewModel: PlayViewModel
 
     private var googleMap: GoogleMap? = null
@@ -64,8 +66,7 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback {
             }
         }
         delete_button.setOnClickListener {
-            record?.let { viewModel.remove(it) }
-            mainActivity().startRecordsFragment()
+            DeleteDialog.instance(R.string.playback_delete_prompt).show(childFragmentManager, "delete")
         }
     }
 
@@ -96,6 +97,11 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback {
                 else -> R.drawable.ic_play_arrow_white_24dp
             }))
         }
+    }
+
+    override fun onDelete() {
+        record?.let { viewModel.remove(it) }
+        mainActivity().startRecordsFragment()
     }
 
     @SuppressLint("MissingPermission")

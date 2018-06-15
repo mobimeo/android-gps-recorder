@@ -17,10 +17,11 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.ui.DeleteDialog
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import kotlinx.android.synthetic.main.records_fragment.*
 
-class RecordsFragment : Fragment() {
+class RecordsFragment : Fragment(), DeleteDialog.Callback {
 
     private lateinit var viewModel: RecordsViewModel
 
@@ -65,8 +66,7 @@ class RecordsFragment : Fragment() {
         })
 
         delete_button.setOnClickListener {
-            val records = adapter.clearSelection()
-            viewModel.remove(records)
+            DeleteDialog.instance(R.string.records_delete_prompt).show(childFragmentManager, "delete")
         }
         share_button.setOnClickListener {
             val records = adapter.clearSelection()
@@ -89,13 +89,16 @@ class RecordsFragment : Fragment() {
         clear_selection_button.setOnClickListener { adapter.clearSelection() }
     }
 
+    override fun onDelete() {
+        viewModel.remove(adapter.clearSelection())
+    }
+
     private fun hasLocationPermission() =
             requireActivity().checkSelfPermission(ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(RecordsViewModel::class.java)
-
         viewModel.records.observe(this, Observer<List<Record>> { list ->
             adapter.submitList(list)
             empty_view.visibility = if (list?.isNotEmpty() == true) View.GONE else View.VISIBLE
