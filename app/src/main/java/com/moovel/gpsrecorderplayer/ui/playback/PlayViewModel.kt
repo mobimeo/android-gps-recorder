@@ -9,6 +9,7 @@ import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.moovel.gpsrecorderplayer.repo.Exporter
 import com.moovel.gpsrecorderplayer.repo.IPlayService
 import com.moovel.gpsrecorderplayer.repo.PlayService
 import com.moovel.gpsrecorderplayer.repo.Record
@@ -40,5 +41,9 @@ class PlayViewModel(application: Application) : AndroidViewModel(application) {
 
     fun stop() {
         service.value?.stop()
+    }
+
+    fun export(record: Record, result: (Intent?, Throwable?) -> Unit) {
+        Exporter.export(getApplication(), listOf(record), result)
     }
 }

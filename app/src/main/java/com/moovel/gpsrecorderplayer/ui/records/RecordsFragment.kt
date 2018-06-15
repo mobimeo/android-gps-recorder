@@ -53,7 +53,7 @@ class RecordsFragment : Fragment() {
         menu_button.setOnClickListener { bottom_drawer.open() }
 
         open_source_menu_item.setOnClickListener {
-            startActivity(Intent(context, OssLicensesMenuActivity::class.java)) //FIXME use nav controller
+            startActivity(Intent(context, OssLicensesMenuActivity::class.java))
         }
 
         adapter.selectedLiveData().observe(this, Observer<Set<Record>> { selectedRecords ->
