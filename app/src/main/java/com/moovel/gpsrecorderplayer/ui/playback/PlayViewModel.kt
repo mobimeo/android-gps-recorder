@@ -13,6 +13,8 @@ import com.moovel.gpsrecorderplayer.repo.Exporter
 import com.moovel.gpsrecorderplayer.repo.IPlayService
 import com.moovel.gpsrecorderplayer.repo.PlayService
 import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.repo.RecordsDatabase
+import com.moovel.gpsrecorderplayer.repo.async
 import com.moovel.gpsrecorderplayer.utils.switchMap
 
 class PlayViewModel(application: Application) : AndroidViewModel(application) {
@@ -45,5 +47,9 @@ class PlayViewModel(application: Application) : AndroidViewModel(application) {
 
     fun export(record: Record, result: (Intent?, Throwable?) -> Unit) {
         Exporter.export(getApplication(), listOf(record), result)
+    }
+
+    fun remove(record: Record) {
+        async { RecordsDatabase.getInstance(getApplication()).recordsDao().delete(record) }
     }
 }

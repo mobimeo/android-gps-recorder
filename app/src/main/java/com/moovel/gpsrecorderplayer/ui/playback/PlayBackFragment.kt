@@ -63,7 +63,10 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
-        delete_button.setOnClickListener { } // TODO delete current record
+        delete_button.setOnClickListener {
+            record?.let { viewModel.remove(it) }
+            mainActivity().startRecordsFragment()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -104,4 +107,6 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback {
         googleMap.uiSettings.setAllGesturesEnabled(false)
         googleMap.uiSettings.isMyLocationButtonEnabled = false
     }
+
+    private fun mainActivity() = (activity as MainActivity)
 }

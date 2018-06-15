@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         startFragment("play", { PlayBackFragment() }, bundle)
     }
 
-    private fun startRecordsFragment() {
+    fun startRecordsFragment() {
         startFragment("list", { RecordsFragment() })
     }
 
