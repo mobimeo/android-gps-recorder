@@ -38,13 +38,13 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    implementation "androidx.appcompat:appcompat:1.0.0-alpha3"
-    implementation "com.google.android.material:material:1.0.0-alpha3"
+    implementation 'androidx.appcompat:appcompat:1.0.0-alpha3'
+    implementation 'com.google.android.material:material:1.0.0-alpha3'
     implementation 'androidx.recyclerview:recyclerview-selection:1.0.0-alpha3'
 
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-alpha1'
-    implementation 'com.airbnb.android:lottie:2.5.4'
+    implementation 'com.airbnb.android:lottie:2.5.5'
 
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'

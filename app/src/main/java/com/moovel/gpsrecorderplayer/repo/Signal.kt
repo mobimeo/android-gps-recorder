@@ -28,6 +28,12 @@ data class Signal(
         val level: Int
 ) {
     companion object {
+        const val LEVEL_NONE = 0
+        const val LEVEL_POOR = 1
+        const val LEVEL_MODERATE = 2
+        const val LEVEL_GOOD = 3
+        const val LEVEL_GREAT = 4
+
         fun networkTypeName(networkType: Int) = when (networkType) {
             TelephonyManager.NETWORK_TYPE_UNKNOWN -> "UNKNOWN"
             TelephonyManager.NETWORK_TYPE_GPRS -> "GPRS"

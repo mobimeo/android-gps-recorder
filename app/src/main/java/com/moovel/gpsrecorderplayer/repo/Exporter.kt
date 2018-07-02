@@ -98,6 +98,74 @@ object Exporter {
         }
     }
 
+
+    private fun OutputStream.writeStats(locations: List<LocationStamp>, signals: List<SignalStamp>) {
+        val columns = listOf<CsvColumn<Unit>>(
+                CsvColumn("locations") {
+                    locations.size
+                },
+
+                CsvColumn("avg. speed") {
+                    locations.map { it.speed ?: 0f }.average()
+                },
+                CsvColumn("max. speed") {
+                    locations.map { it.speed ?: 0f }.max()
+                },
+                CsvColumn("min. speed") {
+                    locations.map { it.speed ?: 0f }.min()
+                },
+
+                CsvColumn("avg. horizontalAccuracyMeters") {
+                    locations.mapNotNull { it.horizontalAccuracyMeters }.average()
+                },
+                CsvColumn("max. horizontalAccuracyMeters") {
+                    locations.mapNotNull { it.horizontalAccuracyMeters }.max()
+                },
+                CsvColumn("min. horizontalAccuracyMeters") {
+                    locations.mapNotNull { it.horizontalAccuracyMeters }.min()
+                },
+
+                CsvColumn("avg. verticalAccuracyMeters") {
+                    locations.mapNotNull { it.verticalAccuracyMeters }.average()
+                },
+                CsvColumn("max. verticalAccuracyMeters") {
+                    locations.mapNotNull { it.verticalAccuracyMeters }.max()
+                },
+                CsvColumn("min. verticalAccuracyMeters") {
+                    locations.mapNotNull { it.verticalAccuracyMeters }.min()
+                },
+
+                CsvColumn("signals") {
+                    signals.size
+                },
+                CsvColumn("signal level NONE") {
+                    if (signals.isEmpty()) 0f
+                    else signals.filter { it.level == Signal.LEVEL_NONE }.size.toFloat() / signals.size
+                },
+                CsvColumn("signal level POOR") {
+                    if (signals.isEmpty()) 0f
+                    else signals.filter { it.level == Signal.LEVEL_POOR }.size.toFloat() / signals.size
+                },
+                CsvColumn("signal level MODERATE") {
+                    if (signals.isEmpty()) 0f
+                    else signals.filter { it.level == Signal.LEVEL_MODERATE }.size.toFloat() / signals.size
+                },
+                CsvColumn("signal level GOOD") {
+                    if (signals.isEmpty()) 0f
+                    else signals.filter { it.level == Signal.LEVEL_GOOD }.size.toFloat() / signals.size
+                },
+                CsvColumn("signal level GREAT") {
+                    if (signals.isEmpty()) 0f
+                    else signals.filter { it.level == Signal.LEVEL_GREAT }.size.toFloat() / signals.size
+                }
+        )
+
+
+        write(columns.joinToString(COMMA) { it.name }.toByteArray())
+        write(LINE_SEPARATOR.toByteArray())
+        write(columns.joinToString(COMMA) { it.project(Unit) }.toByteArray())
+    }
+
     private fun export(db: RecordsDatabase, recordId: String, path: File): File? {
         val record = db.recordsDao().getById(recordId) ?: return null
         val locations = db.locationsDao().getByRecordId(recordId)
@@ -115,9 +183,11 @@ object Exporter {
             putNextEntry(ZipEntry("locations.csv"))
             write(LOCATION_ROWS, locations)
 
-
             putNextEntry(ZipEntry("signals.csv"))
             write(SIGNAL_ROWS, signals)
+
+            putNextEntry(ZipEntry("stats.csv"))
+            writeStats(locations, signals)
         }
 
         return file
