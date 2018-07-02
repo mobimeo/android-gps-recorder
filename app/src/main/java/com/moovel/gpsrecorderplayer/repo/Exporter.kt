@@ -9,6 +9,8 @@ import java.io.Closeable
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -18,44 +20,46 @@ object Exporter {
     private const val TYPE = "application/zip"
     private const val FILE_PROVIDER_AUTHORITY = "com.moovel.gpsrecorderplayer.fileprovider"
 
-    private val RECORD_ROWS = arrayListOf<CsvColumn<Record>>(
-            CsvColumn("id") { it.id },
-            CsvColumn("name") { it.name.replace(COMMA, "") },
-            CsvColumn("start") { it.start })
+    private fun Long.formatDateTime() = DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(this))
 
-    private val LOCATION_ROWS = arrayListOf<CsvColumn<LocationStamp>>(
-            CsvColumn("index") { it.index },
-            CsvColumn("created") { it.created },
-            CsvColumn("provider") { it.provider },
-            CsvColumn("time") { it.time },
-            CsvColumn("latitude") { it.latitude },
-            CsvColumn("longitude") { it.longitude },
-            CsvColumn("altitude") { it.altitude },
-            CsvColumn("speed") { it.speed },
-            CsvColumn("bearing") { it.bearing },
-            CsvColumn("horizontalAccuracyMeters") { it.horizontalAccuracyMeters },
-            CsvColumn("verticalAccuracyMeters") { it.verticalAccuracyMeters },
-            CsvColumn("speedAccuracyMetersPerSecond") { it.speedAccuracyMetersPerSecond },
-            CsvColumn("bearingAccuracyDegrees") { it.bearingAccuracyDegrees })
+    private val RECORD_ROWS = arrayListOf<CsvColumn<Record?>>(
+            CsvColumn("id") { it?.id },
+            CsvColumn("name") { it?.name?.replace(COMMA, "") },
+            CsvColumn("start") { it?.start?.formatDateTime() })
 
-    private val SIGNAL_ROWS = arrayListOf<CsvColumn<SignalStamp>>(
-            CsvColumn("index") { it.index },
-            CsvColumn("created") { it.created },
-            CsvColumn("networkType") { it.networkType },
-            CsvColumn("networkTypeName") { Signal.networkTypeName(it.networkType) },
-            CsvColumn("networkClassName") { Signal.networkClassName(it.networkType) },
-            CsvColumn("serviceState") { it.serviceState },
-            CsvColumn("serviceStateName") { Signal.serviceStateName(it.serviceState) },
-            CsvColumn("gsmSignalStrength") { it.gsmSignalStrength },
-            CsvColumn("gsmBitErrorRate") { it.gsmBitErrorRate },
-            CsvColumn("cdmaDbm") { it.cdmaDbm },
-            CsvColumn("cdmaEcio") { it.cdmaEcio },
-            CsvColumn("evdoDbm") { it.evdoDbm },
-            CsvColumn("evdoEcio") { it.evdoEcio },
-            CsvColumn("evdoSnr") { it.evdoSnr },
-            CsvColumn("gsm") { it.gsm },
-            CsvColumn("level") { it.level },
-            CsvColumn("levelName") { Signal.levelName(it.level) })
+    private val LOCATION_ROWS = arrayListOf<CsvColumn<LocationStamp?>>(
+            CsvColumn("index") { it?.index },
+            CsvColumn("created") { it?.created?.formatDateTime() },
+            CsvColumn("provider") { it?.provider },
+            CsvColumn("time") { it?.time },
+            CsvColumn("latitude") { it?.latitude },
+            CsvColumn("longitude") { it?.longitude },
+            CsvColumn("altitude") { it?.altitude },
+            CsvColumn("speed") { it?.speed },
+            CsvColumn("bearing") { it?.bearing },
+            CsvColumn("horizontalAccuracyMeters") { it?.horizontalAccuracyMeters },
+            CsvColumn("verticalAccuracyMeters") { it?.verticalAccuracyMeters },
+            CsvColumn("speedAccuracyMetersPerSecond") { it?.speedAccuracyMetersPerSecond },
+            CsvColumn("bearingAccuracyDegrees") { it?.bearingAccuracyDegrees })
+
+    private val SIGNAL_ROWS = arrayListOf<CsvColumn<SignalStamp?>>(
+            CsvColumn("index") { it?.index },
+            CsvColumn("created") { it?.created?.formatDateTime() },
+            CsvColumn("networkType") { it?.networkType },
+            CsvColumn("networkTypeName") { it?.networkType?.let { Signal.networkTypeName(it) } },
+            CsvColumn("networkClassName") { it?.networkType?.let { Signal.networkClassName(it) } },
+            CsvColumn("serviceState") { it?.serviceState },
+            CsvColumn("serviceStateName") { it?.serviceState?.let { Signal.serviceStateName(it) } },
+            CsvColumn("gsmSignalStrength") { it?.gsmSignalStrength },
+            CsvColumn("gsmBitErrorRate") { it?.gsmBitErrorRate },
+            CsvColumn("cdmaDbm") { it?.cdmaDbm },
+            CsvColumn("cdmaEcio") { it?.cdmaEcio },
+            CsvColumn("evdoDbm") { it?.evdoDbm },
+            CsvColumn("evdoEcio") { it?.evdoEcio },
+            CsvColumn("evdoSnr") { it?.evdoSnr },
+            CsvColumn("gsm") { it?.gsm },
+            CsvColumn("level") { it?.level },
+            CsvColumn("levelName") { it?.level?.let { Signal.levelName(it) } })
 
     fun export(context: Context, records: Collection<Record>, result: (Intent?, Throwable?) -> Unit) {
         val handler = Handler()
@@ -166,6 +170,30 @@ object Exporter {
         write(columns.joinToString(COMMA) { it.project(Unit) }.toByteArray())
     }
 
+    private fun OutputStream.writeJoin(locations: List<LocationStamp>, signals: List<SignalStamp>) {
+        val locationRowNames = LOCATION_ROWS.map { "location_${it.name}" }
+        val signalRowNames = LOCATION_ROWS.map { "signal_${it.name}" }
+
+        write(locationRowNames.plus(signalRowNames).joinToString(COMMA).toByteArray())
+
+        var lastSignalIndex = 0
+        var signal: SignalStamp? = null
+        locations.forEach { location ->
+            val signalsIterator = signals.subList(lastSignalIndex, signals.size).iterator()
+            while (signalsIterator.hasNext()) {
+                val next = signalsIterator.next()
+                if (next.created > location.created) break
+                lastSignalIndex++
+                signal = next
+            }
+
+            val locationRowData = LOCATION_ROWS.map { it.project(location) }
+            val signalRowData = SIGNAL_ROWS.map { it.project(signal) }
+            write(LINE_SEPARATOR.toByteArray())
+            write(locationRowData.plus(signalRowData).joinToString(COMMA).toByteArray())
+        }
+    }
+
     private fun export(db: RecordsDatabase, recordId: String, path: File): File? {
         val record = db.recordsDao().getById(recordId) ?: return null
         val locations = db.locationsDao().getByRecordId(recordId)
@@ -188,6 +216,9 @@ object Exporter {
 
             putNextEntry(ZipEntry("stats.csv"))
             writeStats(locations, signals)
+
+            putNextEntry(ZipEntry("locations_signals.csv"))
+            writeJoin(locations, signals)
         }
 
         return file
