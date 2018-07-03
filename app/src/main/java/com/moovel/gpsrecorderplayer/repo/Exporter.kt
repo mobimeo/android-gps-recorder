@@ -172,7 +172,7 @@ object Exporter {
 
     private fun OutputStream.writeJoin(locations: List<LocationStamp>, signals: List<SignalStamp>) {
         val locationRowNames = LOCATION_ROWS.map { "location_${it.name}" }
-        val signalRowNames = LOCATION_ROWS.map { "signal_${it.name}" }
+        val signalRowNames = SIGNAL_ROWS.map { "signal_${it.name}" }
 
         write(locationRowNames.plus(signalRowNames).joinToString(COMMA).toByteArray())
 
