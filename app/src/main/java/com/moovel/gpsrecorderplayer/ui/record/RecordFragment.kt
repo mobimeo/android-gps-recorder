@@ -106,15 +106,13 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
         }
     }
 
-    override fun onBackPress(): Boolean {
+    override fun onBackOrHomePress(): Boolean {
         if (viewModel.isRecording()) {
             BackDialog().show(childFragmentManager, "back")
             return true
         }
         return false
     }
-
-    override fun onHomePress() = onBackPress()
 
     override fun onStopClicked() {
         viewModel.stop(edit_record_name.editableText.toString())
