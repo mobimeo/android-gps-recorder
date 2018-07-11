@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.ui.BackPressable
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import com.moovel.gpsrecorderplayer.utils.dpToPx
 import com.moovel.gpsrecorderplayer.utils.latLng
@@ -28,7 +29,8 @@ import kotlinx.android.synthetic.main.record_fragment.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_DATE
 
-class RecordFragment : Fragment(), OnMapReadyCallback {
+class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog.Callback {
+
     private lateinit var viewModel: RecordViewModel
     private var googleMap: GoogleMap? = null
     private var polyline: Polyline? = null
@@ -102,6 +104,21 @@ class RecordFragment : Fragment(), OnMapReadyCallback {
         viewModel.polyline.observe(this) {
             updatePolyline(it)
         }
+    }
+
+    override fun onBackPress(): Boolean {
+        if (viewModel.isRecording()) {
+            BackDialog().show(childFragmentManager, "back")
+            return true
+        }
+        return false
+    }
+
+    override fun onHomePress() = onBackPress()
+
+    override fun onStopClicked() {
+        viewModel.stop(edit_record_name.editableText.toString())
+        mainActivity().startRecordsFragment()
     }
 
     private fun updatePolyline(points: List<LatLng>) {

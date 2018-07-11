@@ -20,19 +20,27 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) startRecordsFragment()
     }
 
-    override fun onBackPressed() = when {
-        bottom_drawer?.isOpen() == true -> bottom_drawer.close()
-        supportFragmentManager.findFragmentById(R.id.fragment_holder) is RecordsFragment -> super.onBackPressed()
-        else -> startRecordsFragment()
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_holder)
+        when {
+            bottom_drawer?.isOpen() == true -> bottom_drawer.close()
+            (fragment as? BackPressable)?.onBackPress() == true -> return
+            fragment is RecordsFragment -> super.onBackPressed()
+            else -> startRecordsFragment()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            startRecordsFragment()
-            return true
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_holder)
+        return when {
+            (fragment as? BackPressable)?.onHomePress() == true -> true
+            item.itemId == android.R.id.home -> {
+                startRecordsFragment()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
 
-        return super.onOptionsItemSelected(item)
     }
 
     fun startRecordFragment() {

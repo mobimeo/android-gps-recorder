@@ -13,6 +13,9 @@
     <string name="record_altitude">Altitude</string>
     <string name="record_bearing">Bearing</string>
     <string name="record_speed">Speed</string>
+    <string name="back_dialog_title">Recording</string>
+    <string name="back_dialog_message">Do you want to stop recording?</string>
+    <string name="back_dialog_stop">Stop</string>
     <string name="record_vertical_accuracy">Vertical Accuracy</string>
     <string name="record_bearing_accuracy">Bearing Accuracy</string>
     <string name="record_speed_accuracy">Speed Accuracy</string>

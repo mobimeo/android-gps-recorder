@@ -52,4 +52,11 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
             service.start(recordName)
         }
     }
+
+    fun stop(recordName: String) {
+        service.rename(recordName)
+        service.stop()
+    }
+
+    fun isRecording() = service.isRecording().value ?: false
 }
