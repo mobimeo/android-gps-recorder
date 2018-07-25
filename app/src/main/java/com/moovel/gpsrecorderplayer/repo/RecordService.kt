@@ -1,8 +1,9 @@
 package com.moovel.gpsrecorderplayer.repo
 
-import android.app.Notification
+import android.app.Notification.VISIBILITY_PUBLIC
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.Service
 import android.content.Intent
 import android.location.Location
@@ -10,6 +11,7 @@ import android.os.Binder
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -110,7 +112,7 @@ class RecordService : Service(), IRecordService {
         record?.insertRecordAsync()
         location.observeForever(locationObserver)
         signal.observeForever(signalObserver)
-        val notification = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentText(getString(R.string.recording))
                 .build()
         startForeground(NOTIFICATION_ID, notification)
@@ -191,7 +193,9 @@ class RecordService : Service(), IRecordService {
 
     private fun setupNotificationChannel() {
         val name = getString(R.string.record_new_record)
-        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT)
+        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, IMPORTANCE_LOW).apply {
+            lockscreenVisibility = VISIBILITY_PUBLIC
+        }
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)

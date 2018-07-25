@@ -1,7 +1,9 @@
 package com.moovel.gpsrecorderplayer.repo
 
+import android.app.Notification.VISIBILITY_PUBLIC
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.Service
 import android.content.Intent
 import android.location.Location
@@ -88,7 +90,9 @@ class PlayService : Service(), IPlayService {
 
     private fun setupNotificationChannel() {
         val name = getString(R.string.record_new_record)
-        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT)
+        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, name, IMPORTANCE_LOW).apply {
+            lockscreenVisibility = VISIBILITY_PUBLIC
+        }
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
