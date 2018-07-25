@@ -20,8 +20,8 @@ class DeleteDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(activity)
                 .setTitle(arguments?.getInt("title_res") ?: -1)
-                .setNegativeButton(R.string.universal_cancel, { _, _ -> })
-                .setPositiveButton(R.string.record_delete, { _, _ -> (parentFragment as? Callback)?.onDelete() })
+                .setNegativeButton(R.string.universal_cancel) { _, _ -> }
+                .setPositiveButton(R.string.universal_delete) { _, _ -> (parentFragment as? Callback)?.onDelete() }
                 .create()
     }
 

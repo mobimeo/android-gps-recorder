@@ -3,7 +3,6 @@ package com.moovel.gpsrecorderplayer.ui.record
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import com.moovel.gpsrecorderplayer.R
 

@@ -30,8 +30,8 @@ class BottomDrawer @JvmOverloads constructor(
         private const val ANIMATION_DURATION = 200L
     }
 
-    var heightListener: ((height: Float) -> Unit)? = null
-    var clickListener: (() -> Unit)? = null
+    private var heightListener: ((height: Float) -> Unit)? = null
+    private var clickListener: (() -> Unit)? = null
     private var state: Int = STATE_COLLAPSED
         set(value) {
             if (field != value) {

@@ -3,7 +3,6 @@ package com.moovel.gpsrecorderplayer.repo
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
