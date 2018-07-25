@@ -86,6 +86,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
                 true -> R.drawable.ic_stop_white_24dp
                 else -> R.drawable.ic_fiber_manual_record_white_24dp
             }))
+            edit_record_name.isEnabled = !recording
         })
 
         viewModel.stopListener = { record ->
