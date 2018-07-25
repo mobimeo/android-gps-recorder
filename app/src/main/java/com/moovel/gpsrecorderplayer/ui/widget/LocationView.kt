@@ -22,8 +22,8 @@ class LocationView @JvmOverloads constructor(
     var location: Location? = null
         set(value) {
             field = value
-            latitude.text = value?.latitude?.format(5) ?: na
-            longitude.text = value?.longitude?.format(5) ?: na
+            latitude.text = value?.latitude?.format(4) ?: na
+            longitude.text = value?.longitude?.format(4) ?: na
             speed.text = value?.speed?.takeIf { value.hasSpeed() }?.format() ?: na
             bearing.text = value?.bearing?.takeIf { value.hasBearing() }?.format() ?: na
             altitude.text = value?.altitude?.takeIf { value.hasAltitude() }?.format() ?: na

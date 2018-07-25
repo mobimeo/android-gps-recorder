@@ -10,6 +10,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_latitude"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -17,6 +19,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_longitude"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -24,6 +28,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_altitude"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -32,6 +38,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="48.78232" />
@@ -41,6 +49,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="9.17702" />
@@ -50,6 +60,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="247" />
@@ -59,6 +71,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_bearing"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -67,6 +81,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_speed"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -75,6 +91,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_vertical_accuracy"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -83,6 +101,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="15.44" />
@@ -92,6 +112,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="25.44" />
@@ -101,6 +123,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="5.29" />
@@ -110,6 +134,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_bearing_accuracy"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -118,6 +144,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_speed_accuracy"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -126,6 +154,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_horizontal_accuracy"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -134,6 +164,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="7.17" />
@@ -143,6 +175,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="8.23" />
@@ -152,6 +186,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="13.78" />
@@ -161,6 +197,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_signal_type"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -169,6 +207,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_signal_class"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -177,6 +217,8 @@
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_signal_strength"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
@@ -185,6 +227,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="7.17" />
@@ -194,6 +238,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="8.23" />
@@ -203,6 +249,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:text="@string/record_not_available"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         tools:text="13.78" />
