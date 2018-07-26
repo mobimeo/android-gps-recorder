@@ -12,6 +12,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
 import android.os.SystemClock
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -62,6 +63,9 @@ class PlayService : Service(), IPlayService {
     override fun start() {
 //        client.setMockMode(true)
         current?.let {
+            val notification = NotificationCompat.Builder(this, PlayService.NOTIFICATION_CHANNEL_ID).build()
+            startForeground(PlayService.NOTIFICATION_ID, notification)
+
             locationHandler.start(it)
             playing.value = true
         }
@@ -69,8 +73,8 @@ class PlayService : Service(), IPlayService {
 
     override fun stop() {
 //        client.setMockMode(false)
+        stopForeground(true)
         locationHandler.stop()
-        current = null
         playing.value = false
     }
 
