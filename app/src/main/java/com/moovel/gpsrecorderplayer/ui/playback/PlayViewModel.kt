@@ -9,6 +9,7 @@ import android.os.IBinder
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.repo.Exporter
 import com.moovel.gpsrecorderplayer.repo.IPlayService
 import com.moovel.gpsrecorderplayer.repo.PlayService
@@ -23,6 +24,7 @@ class PlayViewModel(application: Application) : AndroidViewModel(application) {
     val location = service.switchMap { it?.locations() }
     val signal = service.switchMap { it?.signal() }
     val playing: LiveData<Boolean> = service.switchMap { it?.isPlaying() }
+    val polyline: LiveData<List<LatLng>> = service.switchMap { it?.polyline() }
 
     init {
         val recordServiceIntent = Intent(application, PlayService::class.java)
@@ -37,8 +39,12 @@ class PlayViewModel(application: Application) : AndroidViewModel(application) {
         }, BIND_AUTO_CREATE)
     }
 
-    fun play(record: Record) {
-        service.value?.start(record)
+    fun initialize(record: Record) {
+        service.observeForever { service -> service?.initialize(record) }
+    }
+
+    fun play() {
+        service.value?.start()
     }
 
     fun stop() {

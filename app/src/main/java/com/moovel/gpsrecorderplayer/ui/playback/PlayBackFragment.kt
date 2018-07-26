@@ -13,6 +13,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
@@ -22,6 +25,7 @@ import com.moovel.gpsrecorderplayer.utils.dpToPx
 import com.moovel.gpsrecorderplayer.utils.latLng
 import com.moovel.gpsrecorderplayer.utils.observe
 import com.moovel.gpsrecorderplayer.utils.setLocationSource
+import com.moovel.gpsrecorderplayer.utils.zoomToPolyline
 import kotlinx.android.synthetic.main.playback_fragment.*
 
 class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
@@ -29,7 +33,7 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
     private lateinit var viewModel: PlayViewModel
 
     private var googleMap: GoogleMap? = null
-
+    private var polyline: Polyline? = null
     private val record: Record? get() = arguments?.getParcelable("record")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +78,8 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(PlayViewModel::class.java)
 
+        record?.let { viewModel.initialize(it) }
+
         viewModel.location.observe(this) { location ->
             location_view.location = location
             googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, 17f))
@@ -82,12 +88,10 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
         viewModel.signal.observe(this) { signal -> location_view.signal = signal }
 
         play_button.setOnClickListener {
-            val r = record ?: return@setOnClickListener
-
             if (viewModel.playing.value == true) {
                 viewModel.stop()
             } else {
-                viewModel.play(r)
+                viewModel.play()
             }
         }
 
@@ -96,6 +100,10 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
                 true -> R.drawable.ic_stop_white_24dp
                 else -> R.drawable.ic_play_arrow_white_24dp
             }))
+        }
+
+        viewModel.polyline.observe(this) {
+            updatePolyline(it)
         }
     }
 
@@ -112,6 +120,19 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.setAllGesturesEnabled(false)
         googleMap.uiSettings.isMyLocationButtonEnabled = false
+        viewModel.polyline.value?.let {
+            if (isResumed) updatePolyline(it)
+        }
+    }
+
+    private fun updatePolyline(points: List<LatLng>) {
+        val map = googleMap ?: return
+        polyline?.points = points
+
+        if (polyline == null) {
+            polyline = map.addPolyline(PolylineOptions().addAll(points))
+        }
+        map.zoomToPolyline(points)
     }
 
     private fun mainActivity() = (activity as MainActivity)

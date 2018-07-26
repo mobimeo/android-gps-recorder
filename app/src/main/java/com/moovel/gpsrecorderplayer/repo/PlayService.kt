@@ -42,9 +42,11 @@ class PlayService : Service(), IPlayService {
         }
     }
 
+    private val locationsDao by lazy { db.locationsDao() }
     private val location = MutableLiveData<Location>()
     private val playing = MutableLiveData<Boolean>()
     private var current: Record? = null
+    private val polyline = MutableLiveData<List<LatLng>>()
 
     override fun onCreate() {
         super.onCreate()
@@ -52,11 +54,17 @@ class PlayService : Service(), IPlayService {
         playing.value = false
     }
 
-    override fun start(record: Record) {
+    override fun initialize(record: Record) {
         current = record
+        async { polyline.postValue(locationsDao.getPolyline(record.id).map { LatLng(it.latitude, it.longitude) }) }
+    }
+
+    override fun start() {
 //        client.setMockMode(true)
-        locationHandler.start(record)
-        playing.value = true
+        current?.let {
+            locationHandler.start(it)
+            playing.value = true
+        }
     }
 
     override fun stop() {
@@ -75,8 +83,7 @@ class PlayService : Service(), IPlayService {
     }
 
     override fun polyline(): LiveData<List<LatLng>> {
-        // FIXME
-        return MutableLiveData()
+        return polyline
     }
 
     override fun locations(): LiveData<Location> {

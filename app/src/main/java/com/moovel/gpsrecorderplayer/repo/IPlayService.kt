@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import com.google.android.gms.maps.model.LatLng
 
 interface IPlayService : LocationSource, SignalSource {
-    fun start(record: Record)
+    fun initialize(record: Record)
+    fun start()
     fun stop()
     fun current(): Record?
     fun isPlaying(): LiveData<Boolean>
