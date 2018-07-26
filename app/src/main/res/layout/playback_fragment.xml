@@ -35,8 +35,8 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
                 android:textColor="#333"
                 android:textSize="32sp"
-                tools:text="25.05.2018 Aufnahme 1"
-                tools:ignore="TextFields" />
+                tools:ignore="TextFields"
+                tools:text="25.05.2018 Aufnahme 1" />
 
             <com.moovel.gpsrecorderplayer.ui.widget.LocationView
                 android:id="@+id/location_view"
@@ -75,8 +75,7 @@
                 android:id="@+id/share_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
                 android:background="?android:selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:contentDescription="@string/universal_share"
@@ -88,13 +87,23 @@
                 android:id="@+id/delete_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/share_button"
+                android:layout_toEndOf="@id/share_button"
                 android:background="?android:selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:contentDescription="@string/universal_delete"
                 android:focusable="true"
                 android:padding="16dp"
                 android:src="@drawable/ic_delete_white_24dp" />
+
+            <TextView
+                android:id="@+id/timer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="16dp"
+                android:gravity="center"
+                android:textColor="#fff"
+                tools:text="3:45" />
 
         </RelativeLayout>
 

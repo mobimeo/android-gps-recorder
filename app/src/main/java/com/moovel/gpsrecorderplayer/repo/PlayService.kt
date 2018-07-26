@@ -48,6 +48,7 @@ class PlayService : Service(), IPlayService {
     private val playing = MutableLiveData<Boolean>()
     private var current: Record? = null
     private val polyline = MutableLiveData<List<LatLng>>()
+    private val ticker = TickerLiveData()
 
     override fun onCreate() {
         super.onCreate()
@@ -65,7 +66,7 @@ class PlayService : Service(), IPlayService {
         current?.let {
             val notification = NotificationCompat.Builder(this, PlayService.NOTIFICATION_CHANNEL_ID).build()
             startForeground(PlayService.NOTIFICATION_ID, notification)
-
+            ticker.start()
             locationHandler.start(it)
             playing.value = true
         }
@@ -75,6 +76,8 @@ class PlayService : Service(), IPlayService {
 //        client.setMockMode(false)
         stopForeground(true)
         locationHandler.stop()
+        ticker.stop()
+        ticker.reset()
         playing.value = false
     }
 
@@ -92,6 +95,10 @@ class PlayService : Service(), IPlayService {
 
     override fun locations(): LiveData<Location> {
         return location
+    }
+
+    override fun ticker(): LiveData<Long?> {
+        return ticker
     }
 
     override fun signal(): LiveData<Signal> {

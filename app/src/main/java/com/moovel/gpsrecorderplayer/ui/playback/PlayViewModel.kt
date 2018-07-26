@@ -24,6 +24,7 @@ class PlayViewModel(application: Application) : AndroidViewModel(application) {
     val location = service.switchMap { it?.locations() }
     val signal = service.switchMap { it?.signal() }
     val playing: LiveData<Boolean> = service.switchMap { it?.isPlaying() }
+    val tickerLiveData: LiveData<Long?> = service.switchMap { it?.ticker() }
     val polyline: LiveData<List<LatLng>> = service.switchMap { it?.polyline() }
 
     init {

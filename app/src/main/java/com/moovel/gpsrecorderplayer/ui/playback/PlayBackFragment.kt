@@ -3,6 +3,7 @@ package com.moovel.gpsrecorderplayer.ui.playback
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -104,6 +105,11 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
 
         viewModel.polyline.observe(this) {
             updatePolyline(it)
+        }
+
+        viewModel.tickerLiveData.observe(this) {
+            it?.let { timer.text = DateUtils.formatElapsedTime(it) }
+            timer.visibility = if (it == null) View.GONE else View.VISIBLE
         }
     }
 
