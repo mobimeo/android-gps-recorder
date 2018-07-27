@@ -37,5 +37,5 @@ operator fun LatLng.component2() = longitude
 fun GoogleMap.zoomToPolyline(polyline: List<LatLng>) {
     val boundsBuilder = LatLngBounds.Builder()
     polyline.forEach { boundsBuilder.include(it) }
-    moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 15.dpToPx()))
+    moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 24.dpToPx()))
 }

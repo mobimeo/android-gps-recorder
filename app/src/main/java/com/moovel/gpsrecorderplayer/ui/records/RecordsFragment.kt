@@ -34,8 +34,6 @@ class RecordsFragment : Fragment(), DeleteDialog.Callback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainActivity().enableBackButton(false)
-
         records_list.adapter = adapter
         records_list.layoutManager = LinearLayoutManager(requireContext())
 

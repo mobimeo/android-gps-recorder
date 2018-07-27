@@ -49,7 +49,6 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as MainActivity).enableBackButton(true)
         record_name.setText(record?.name)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -73,6 +72,8 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
         delete_button.setOnClickListener {
             DeleteDialog.instance(R.string.playback_delete_prompt).show(childFragmentManager, "delete")
         }
+
+        back_button.setOnClickListener { mainActivity().startRecordsFragment() }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -47,12 +47,12 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mainActivity().enableBackButton(true)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         edit_record_name.setText(getString(R.string.record_new_record, LocalDate.now().format(ISO_DATE), 1))
         edit_record_name.requestFocus()
         edit_record_name.setSelection(edit_record_name.text.length)
+        back_button.setOnClickListener { if (!onBackPressed()) mainActivity().startRecordsFragment() }
     }
 
     @SuppressLint("MissingPermission")
@@ -107,7 +107,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
         }
     }
 
-    override fun onBackOrHomePress(): Boolean {
+    override fun onBackPressed(): Boolean {
         if (viewModel.isRecording()) {
             BackDialog().show(childFragmentManager, "back")
             return true

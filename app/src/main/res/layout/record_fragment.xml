@@ -26,7 +26,6 @@
                 android:id="@+id/edit_record_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:ellipsize="end"
                 android:lines="1"
                 android:paddingHorizontal="16dp"
@@ -65,14 +64,32 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <TextView
-            android:id="@+id/timer"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:textColor="#fff"
-            android:layout_marginHorizontal="16dp"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            tools:text="3:45" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/universal_share"
+                android:focusable="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_arrow_back_white_24dp" />
+
+            <TextView
+                android:id="@+id/timer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="16dp"
+                android:gravity="center"
+                android:textColor="#fff"
+                tools:text="3:45" />
+
+        </RelativeLayout>
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
