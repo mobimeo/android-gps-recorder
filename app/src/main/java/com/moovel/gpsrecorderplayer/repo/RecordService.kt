@@ -11,6 +11,7 @@ import android.os.Binder
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
+import android.os.SystemClock
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -28,7 +29,7 @@ class RecordService : Service(), IRecordService {
             return (binder as RecordBinder).service
         }
 
-        private fun Location.toStamp(recordId: String, index: Int, created: Long = System.currentTimeMillis()) =
+        private fun Location.toStamp(recordId: String, index: Int, created: Long = SystemClock.elapsedRealtimeNanos()) =
                 LocationStamp(recordId,
                         index,
                         created,
@@ -46,7 +47,7 @@ class RecordService : Service(), IRecordService {
                         if (hasBearingAccuracy()) bearingAccuracyDegrees else null
                 )
 
-        private fun Signal.toStamp(recordId: String, index: Int, created: Long = System.currentTimeMillis()) =
+        private fun Signal.toStamp(recordId: String, index: Int, created: Long = SystemClock.elapsedRealtimeNanos()) =
                 SignalStamp(recordId,
                         index,
                         created,
@@ -174,11 +175,13 @@ class RecordService : Service(), IRecordService {
     }
 
     private fun Record.insertLocationAsync(index: Int, location: Location) {
-        handler.post { locationsDao.insert(location.toStamp(this.id, index)) }
+        val created = SystemClock.elapsedRealtime()
+        handler.post { locationsDao.insert(location.toStamp(this.id, index, created)) }
     }
 
     private fun Record.insertSignalAsync(index: Int, signal: Signal) {
-        handler.post { signalsDao.insert(signal.toStamp(this.id, index)) }
+        val created = SystemClock.elapsedRealtime()
+        handler.post { signalsDao.insert(signal.toStamp(this.id, index, created)) }
     }
 
     private fun Record.complete() {

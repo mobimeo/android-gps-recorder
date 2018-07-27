@@ -1,6 +1,7 @@
 package com.moovel.gpsrecorderplayer.repo
 
 import android.os.Parcelable
+import android.os.SystemClock
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -16,7 +17,8 @@ import kotlinx.android.parcel.Parcelize
 data class Record(
         val id: String,
         val name: String,
-        val start: Long = System.currentTimeMillis()
+        val start: Long = System.currentTimeMillis(),
+        val created: Long = SystemClock.elapsedRealtimeNanos()
 ) : Parcelable
 
 @Entity(
@@ -29,7 +31,7 @@ data class LocationStamp(
         @ColumnInfo(name = "record_id")
         val recordId: String,
         val index: Int,
-        val created: Long = System.currentTimeMillis(),
+        val created: Long = SystemClock.elapsedRealtime(),
 
         val provider: String,
         val time: Long,
@@ -55,7 +57,7 @@ data class SignalStamp(
         @ColumnInfo(name = "record_id")
         val recordId: String,
         val index: Int,
-        val created: Long = System.currentTimeMillis(),
+        val created: Long =  SystemClock.elapsedRealtimeNanos(),
 
         @ColumnInfo(name = "network_type")
         val networkType: Int,

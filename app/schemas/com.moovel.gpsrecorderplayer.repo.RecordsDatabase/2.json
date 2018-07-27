@@ -1,0 +1,332 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "b1baf92f107d2716c0bc1f5b38effce7",
+    "entities": [
+      {
+        "tableName": "records",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `start` INTEGER NOT NULL, `created` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "created",
+            "columnName": "created",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_records_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE  INDEX `index_records_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_records_name",
+            "unique": false,
+            "columnNames": [
+              "name"
+            ],
+            "createSql": "CREATE  INDEX `index_records_name` ON `${TABLE_NAME}` (`name`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "locations",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`record_id` TEXT NOT NULL, `index` INTEGER NOT NULL, `created` INTEGER NOT NULL, `provider` TEXT NOT NULL, `time` INTEGER NOT NULL, `elapsedRealtimeNanos` INTEGER NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `altitude` REAL, `speed` REAL, `bearing` REAL, `horizontalAccuracyMeters` REAL, `verticalAccuracyMeters` REAL, `speedAccuracyMetersPerSecond` REAL, `bearingAccuracyDegrees` REAL, PRIMARY KEY(`index`, `record_id`), FOREIGN KEY(`record_id`) REFERENCES `records`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "recordId",
+            "columnName": "record_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "index",
+            "columnName": "index",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "created",
+            "columnName": "created",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "provider",
+            "columnName": "provider",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "elapsedRealtimeNanos",
+            "columnName": "elapsedRealtimeNanos",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "altitude",
+            "columnName": "altitude",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "speed",
+            "columnName": "speed",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bearing",
+            "columnName": "bearing",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "horizontalAccuracyMeters",
+            "columnName": "horizontalAccuracyMeters",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "verticalAccuracyMeters",
+            "columnName": "verticalAccuracyMeters",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "speedAccuracyMetersPerSecond",
+            "columnName": "speedAccuracyMetersPerSecond",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bearingAccuracyDegrees",
+            "columnName": "bearingAccuracyDegrees",
+            "affinity": "REAL",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "index",
+            "record_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_locations_record_id",
+            "unique": false,
+            "columnNames": [
+              "record_id"
+            ],
+            "createSql": "CREATE  INDEX `index_locations_record_id` ON `${TABLE_NAME}` (`record_id`)"
+          },
+          {
+            "name": "index_locations_record_id_index",
+            "unique": false,
+            "columnNames": [
+              "record_id",
+              "index"
+            ],
+            "createSql": "CREATE  INDEX `index_locations_record_id_index` ON `${TABLE_NAME}` (`record_id`, `index`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "records",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "record_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "signals",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`record_id` TEXT NOT NULL, `index` INTEGER NOT NULL, `created` INTEGER NOT NULL, `network_type` INTEGER NOT NULL, `service_state` INTEGER NOT NULL, `gsm_signal_strength` INTEGER NOT NULL, `gsm_bit_error_rate` INTEGER NOT NULL, `cdma_dbm` INTEGER NOT NULL, `cdma_ecio` INTEGER NOT NULL, `evdo_dbm` INTEGER NOT NULL, `evdo_ecio` INTEGER NOT NULL, `evdo_snr` INTEGER NOT NULL, `gsm` INTEGER NOT NULL, `level` INTEGER NOT NULL, PRIMARY KEY(`index`, `record_id`), FOREIGN KEY(`record_id`) REFERENCES `records`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "recordId",
+            "columnName": "record_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "index",
+            "columnName": "index",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "created",
+            "columnName": "created",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "networkType",
+            "columnName": "network_type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serviceState",
+            "columnName": "service_state",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gsmSignalStrength",
+            "columnName": "gsm_signal_strength",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gsmBitErrorRate",
+            "columnName": "gsm_bit_error_rate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cdmaDbm",
+            "columnName": "cdma_dbm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cdmaEcio",
+            "columnName": "cdma_ecio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "evdoDbm",
+            "columnName": "evdo_dbm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "evdoEcio",
+            "columnName": "evdo_ecio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "evdoSnr",
+            "columnName": "evdo_snr",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gsm",
+            "columnName": "gsm",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "level",
+            "columnName": "level",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "index",
+            "record_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_signals_record_id",
+            "unique": false,
+            "columnNames": [
+              "record_id"
+            ],
+            "createSql": "CREATE  INDEX `index_signals_record_id` ON `${TABLE_NAME}` (`record_id`)"
+          },
+          {
+            "name": "index_signals_record_id_index",
+            "unique": false,
+            "columnNames": [
+              "record_id",
+              "index"
+            ],
+            "createSql": "CREATE  INDEX `index_signals_record_id_index` ON `${TABLE_NAME}` (`record_id`, `index`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "records",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "record_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b1baf92f107d2716c0bc1f5b38effce7\")"
+    ]
+  }
+}
