@@ -1,5 +1,6 @@
 package com.moovel.gpsrecorderplayer.repo
 
+import android.annotation.SuppressLint
 import android.app.Notification.VISIBILITY_PUBLIC
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -42,7 +43,7 @@ class PlayService : Service(), IPlayService {
                 if (location == null) {
                     stop()
                 } else {
-                    this.location.value = location
+                    publish(location)
                 }
             }
         }
@@ -80,8 +81,9 @@ class PlayService : Service(), IPlayService {
         async { polyline.postValue(locationsDao.getPolyline(record.id).map { LatLng(it.latitude, it.longitude) }) }
     }
 
+    @SuppressLint("MissingPermission")
     override fun start() {
-//        client.setMockMode(true)
+        client.setMockMode(true)
         current?.let {
             val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                     .setContentTitle(getString(R.string.service_playing))
@@ -97,13 +99,20 @@ class PlayService : Service(), IPlayService {
         }
     }
 
+    @SuppressLint("MissingPermission")
     override fun stop() {
-//        client.setMockMode(false)
+        client.setMockMode(false)
         stopForeground(true)
         locationHandler.stop()
         ticker.stop()
         ticker.reset()
         playing.value = false
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun publish(location: Location?) {
+        client.setMockLocation(location)
+        this.location.value = location
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -148,7 +157,7 @@ class PlayService : Service(), IPlayService {
 
     override fun onDestroy() {
         super.onDestroy()
-        locationHandler.stop()
+        stop()
     }
 
     override fun onBind(intent: Intent?): IBinder {

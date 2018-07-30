@@ -1,8 +1,16 @@
 package com.moovel.gpsrecorderplayer.ui.playback
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AppOpsManager
+import android.app.AppOpsManager.MODE_ALLOWED
+import android.app.AppOpsManager.OPSTR_MOCK_LOCATION
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Process
+import android.provider.Settings
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
+import com.moovel.gpsrecorderplayer.BuildConfig
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.ui.DeleteDialog
@@ -90,10 +99,16 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
         viewModel.signal.observe(this) { signal -> location_view.signal = signal }
 
         play_button.setOnClickListener {
-            if (viewModel.playing.value == true) {
-                viewModel.stop()
-            } else {
-                viewModel.play()
+            when {
+                !hasLocationPermission() -> {
+                    requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0x2F6A)
+                }
+                !isMockApp() -> {
+                    // TODO better to show dialog with instructions
+                    showDevOptions()
+                }
+                viewModel.playing.value == true -> viewModel.stop()
+                else -> viewModel.play()
             }
         }
 
@@ -143,4 +158,17 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
     }
 
     private fun mainActivity() = (activity as MainActivity)
+
+    private fun hasLocationPermission() =
+            requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+
+    private fun isMockApp(): Boolean {
+        val opsManager = requireContext().getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val uid = Process.myUid()
+        return opsManager.checkOpNoThrow(OPSTR_MOCK_LOCATION, uid, BuildConfig.APPLICATION_ID) == MODE_ALLOWED
+    }
+
+    private fun showDevOptions() {
+        startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS))
+    }
 }
