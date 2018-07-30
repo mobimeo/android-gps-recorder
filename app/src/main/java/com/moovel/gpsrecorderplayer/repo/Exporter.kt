@@ -25,11 +25,12 @@ object Exporter {
     private val RECORD_ROWS = arrayListOf<CsvColumn<Record?>>(
             CsvColumn("id") { it?.id },
             CsvColumn("name") { it?.name?.replace(COMMA, "") },
+            CsvColumn("created") { it?.created },
             CsvColumn("start") { it?.start?.formatDateTime() })
 
     private val LOCATION_ROWS = arrayListOf<CsvColumn<LocationStamp?>>(
             CsvColumn("index") { it?.index },
-            CsvColumn("created") { it?.created?.formatDateTime() },
+            CsvColumn("created") { it?.created },
             CsvColumn("provider") { it?.provider },
             CsvColumn("time") { it?.time },
             CsvColumn("latitude") { it?.latitude },
@@ -44,7 +45,7 @@ object Exporter {
 
     private val SIGNAL_ROWS = arrayListOf<CsvColumn<SignalStamp?>>(
             CsvColumn("index") { it?.index },
-            CsvColumn("created") { it?.created?.formatDateTime() },
+            CsvColumn("created") { it?.created },
             CsvColumn("networkType") { it?.networkType },
             CsvColumn("networkTypeName") { it?.networkType?.let { Signal.networkTypeName(it) } },
             CsvColumn("networkClassName") { it?.networkType?.let { Signal.networkClassName(it) } },
