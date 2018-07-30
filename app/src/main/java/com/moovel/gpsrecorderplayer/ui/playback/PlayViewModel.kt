@@ -21,23 +21,29 @@ import com.moovel.gpsrecorderplayer.utils.switchMap
 class PlayViewModel(application: Application) : AndroidViewModel(application) {
 
     private val service: MutableLiveData<IPlayService?> = MutableLiveData()
+
     val location = service.switchMap { it?.locations() }
     val signal = service.switchMap { it?.signal() }
-    val playing: LiveData<Boolean> = service.switchMap { it?.isPlaying() }
+    val playing: LiveData<Boolean> = service.switchMap { it?.playing() }
     val tickerLiveData: LiveData<Long?> = service.switchMap { it?.ticker() }
     val polyline: LiveData<List<LatLng>> = service.switchMap { it?.polyline() }
 
-    init {
-        val recordServiceIntent = Intent(application, PlayService::class.java)
-        application.bindService(recordServiceIntent, object : ServiceConnection {
-            override fun onServiceDisconnected(p0: ComponentName?) {
-                service.value = null
-            }
+    private val connection = object : ServiceConnection {
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            service.value = null
+        }
 
-            override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
-                service.value = PlayService.of(binder)
-            }
-        }, BIND_AUTO_CREATE)
+        override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
+            service.value = PlayService.of(binder)
+        }
+    }
+
+    init {
+        application.bindService(Intent(application, PlayService::class.java), connection, BIND_AUTO_CREATE)
+    }
+
+    override fun onCleared() {
+        getApplication<Application>().unbindService(connection)
     }
 
     fun initialize(record: Record) {

@@ -40,8 +40,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.record_fragment, container, false)
     }
 
@@ -52,7 +51,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
         edit_record_name.setText(getString(R.string.record_new_record, LocalDate.now().format(ISO_DATE), 1))
         edit_record_name.requestFocus()
         edit_record_name.setSelection(edit_record_name.text.length)
-        back_button.setOnClickListener { if (!onBackPressed()) mainActivity().startRecordsFragment() }
+        back_button.setOnClickListener { if (!onBackPressed()) mainActivity()?.startRecordsFragment() }
     }
 
     @SuppressLint("MissingPermission")
@@ -63,9 +62,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.setAllGesturesEnabled(false)
         googleMap.uiSettings.isMyLocationButtonEnabled = false
-        viewModel.polyline.value?.let {
-            if (isResumed) updatePolyline(it)
-        }
+        viewModel.polyline.value?.let { if (isResumed) updatePolyline(it) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -76,9 +73,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
             googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, 17f))
         }
 
-        viewModel.signalLiveData.observe(this) { signal ->
-            location_view.signal = signal
-        }
+        viewModel.signalLiveData.observe(this) { signal -> location_view.signal = signal }
 
         record_button.setOnClickListener { viewModel.onClickButton(edit_record_name.editableText.toString()) }
         viewModel.recordingLiveData.observe(this, Observer<Boolean> { recording ->
@@ -89,22 +84,12 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
             edit_record_name.isEnabled = !recording
         })
 
-        viewModel.stopListener = { record ->
-            if (record != null) {
-                mainActivity().startPlaybackFragment(Bundle().apply { putParcelable("record", record) })
-            } else {
-                // TODO handle record failed
-            }
-        }
-
         viewModel.tickerLiveData.observe(this) {
             it?.let { timer.text = DateUtils.formatElapsedTime(it) }
             timer.visibility = if (it == null) GONE else VISIBLE
         }
 
-        viewModel.polyline.observe(this) {
-            updatePolyline(it)
-        }
+        viewModel.polyline.observe(this) { updatePolyline(it) }
     }
 
     override fun onBackPressed(): Boolean {
@@ -117,17 +102,17 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
 
     override fun onStopClicked() {
         viewModel.stop(edit_record_name.editableText.toString())
-        mainActivity().startRecordsFragment()
+        mainActivity()?.startRecordsFragment()
     }
 
     private fun updatePolyline(points: List<LatLng>) {
         val map = googleMap ?: return
         polyline?.points = points
-
-        if (polyline == null) {
-            polyline = map.addPolyline(PolylineOptions().addAll(points))
-        }
+        if (polyline == null) polyline = map.addPolyline(PolylineOptions().addAll(points))
     }
 
-    private fun mainActivity() = (activity as MainActivity)
+    private fun mainActivity(): MainActivity? {
+        if (!isResumed) return null
+        return activity as MainActivity
+    }
 }

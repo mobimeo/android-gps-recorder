@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
 
 class PlayService : Service(), IPlayService {
+
     companion object {
         private const val NOTIFICATION_ID = 0x4654
         private const val NOTIFICATION_CHANNEL_ID = "play"
@@ -56,6 +57,8 @@ class PlayService : Service(), IPlayService {
         playing.value = false
     }
 
+    override fun isPlaying() = playing.value == true
+
     override fun initialize(record: Record) {
         current = record
         async { polyline.postValue(locationsDao.getPolyline(record.id).map { LatLng(it.latitude, it.longitude) }) }
@@ -85,7 +88,7 @@ class PlayService : Service(), IPlayService {
         return current
     }
 
-    override fun isPlaying(): LiveData<Boolean> {
+    override fun playing(): LiveData<Boolean> {
         return playing
     }
 

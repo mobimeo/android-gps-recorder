@@ -23,8 +23,9 @@
     <string name="record_signal_strength">Signal strength</string>
     <string name="back_dialog_title">Recording</string>
     <string name="back_dialog_message">Do you want to stop recording?</string>
-    <string name="back_dialog_stop">Stop</string>
-    <string name="recording">Recording…</string>
+    <string name="universal_stop">Stop</string>
+    <string name="service_recording">Recording</string>
+    <string name="service_recording_message">Recording GPS and cellular data.</string>
     <string name="records_record">Record</string>
     <string name="records_menu">Menu</string>
     <string name="universal_share">Share</string>

@@ -9,6 +9,7 @@ interface IPlayService : LocationSource, SignalSource {
     fun stop()
     fun ticker(): LiveData<Long?>
     fun current(): Record?
-    fun isPlaying(): LiveData<Boolean>
+    fun playing(): LiveData<Boolean>
+    fun isPlaying(): Boolean
     fun polyline(): LiveData<List<LatLng>>
 }

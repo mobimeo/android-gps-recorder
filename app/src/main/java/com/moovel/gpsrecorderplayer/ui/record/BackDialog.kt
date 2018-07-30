@@ -13,7 +13,7 @@ class BackDialog : DialogFragment() {
                 .setTitle(R.string.back_dialog_title)
                 .setMessage(R.string.back_dialog_message)
                 .setNegativeButton(R.string.universal_cancel) { _, _ -> }
-                .setPositiveButton(R.string.back_dialog_stop) { _, _ -> (parentFragment as? Callback)?.onStopClicked() }
+                .setPositiveButton(R.string.universal_stop) { _, _ -> (parentFragment as? Callback)?.onStopClicked() }
                 .create()
     }
 

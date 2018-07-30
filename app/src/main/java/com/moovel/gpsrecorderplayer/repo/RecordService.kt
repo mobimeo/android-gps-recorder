@@ -4,6 +4,8 @@ import android.app.Notification.VISIBILITY_PUBLIC
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.app.Service
 import android.content.Intent
 import android.location.Location
@@ -18,7 +20,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.ui.MainActivity
 import java.util.UUID
+
+private const val ACTION_FORCE_KILL = "force_stop"
 
 class RecordService : Service(), IRecordService {
     companion object {
@@ -107,14 +112,29 @@ class RecordService : Service(), IRecordService {
         recording.value = false
     }
 
+    override fun isRecording() = recording.value == true
+
     override fun start(name: String) {
         if (record != null) throw IllegalStateException("Stop recording before")
         record = Record(UUID.randomUUID().toString(), name)
         record?.insertRecordAsync()
         location.observeForever(locationObserver)
         signal.observeForever(signalObserver)
+        val intent = Intent(this, MainActivity::class.java).apply {
+            action = Intent.ACTION_MAIN
+            putExtra("service", "record")
+            addCategory(Intent.CATEGORY_LAUNCHER)
+        }
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val stopSelfIntent = Intent(this, RecordService::class.java)
+        stopSelfIntent.action = ACTION_FORCE_KILL
+        val selfStopPendingIntent = PendingIntent.getService(this, 0, stopSelfIntent, FLAG_CANCEL_CURRENT)
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-                .setContentText(getString(R.string.recording))
+                .setContentTitle(getString(R.string.service_recording))
+                .setContentText(getString(R.string.service_recording_message))
+                .setSmallIcon(R.drawable.ic_fiber_manual_record_white_24dp)
+                .setContentIntent(pendingIntent)
+                .addAction(R.drawable.ic_clear_white_24dp, getString(R.string.universal_stop), selfStopPendingIntent)
                 .build()
         startForeground(NOTIFICATION_ID, notification)
         recording.value = true
@@ -162,7 +182,7 @@ class RecordService : Service(), IRecordService {
         return signal
     }
 
-    override fun isRecording(): LiveData<Boolean> {
+    override fun recording(): LiveData<Boolean> {
         return recording
     }
 
@@ -182,6 +202,11 @@ class RecordService : Service(), IRecordService {
     private fun Record.insertSignalAsync(index: Int, signal: Signal) {
         val created = SystemClock.elapsedRealtime()
         handler.post { signalsDao.insert(signal.toStamp(this.id, index, created)) }
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (ACTION_FORCE_KILL == intent?.action) stop()
+        return START_STICKY_COMPATIBILITY
     }
 
     private fun Record.complete() {

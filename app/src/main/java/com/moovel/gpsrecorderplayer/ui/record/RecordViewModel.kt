@@ -12,7 +12,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.repo.IRecordService
-import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.repo.RecordService
 import com.moovel.gpsrecorderplayer.repo.Signal
 import com.moovel.gpsrecorderplayer.utils.switchMap
@@ -23,40 +22,42 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
 
     val locationLiveData: LiveData<Location> = serviceLiveData.switchMap { it?.locations() }
     val signalLiveData: LiveData<Signal> = serviceLiveData.switchMap { it?.signal() }
-    val recordingLiveData: LiveData<Boolean> = serviceLiveData.switchMap { it?.isRecording() }
+    val recordingLiveData: LiveData<Boolean> = serviceLiveData.switchMap { it?.recording() }
     val tickerLiveData: LiveData<Long?> = serviceLiveData.switchMap { it?.ticker() }
     val polyline: LiveData<List<LatLng>> = serviceLiveData.switchMap { it?.polyline() }
-    var stopListener: ((record: Record?) -> Unit)? = null
 
-    private lateinit var service: IRecordService
+    private var service: IRecordService? = null
+    private val connection = object : ServiceConnection {
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            serviceLiveData.value = null
+        }
+
+        override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
+            service = RecordService.of(binder)
+            serviceLiveData.value = service
+        }
+    }
 
     init {
-        val recordServiceIntent = Intent(application, RecordService::class.java)
-        application.bindService(recordServiceIntent, object : ServiceConnection {
-            override fun onServiceDisconnected(p0: ComponentName?) {
-                serviceLiveData.value = null
-            }
+        application.bindService(Intent(application, RecordService::class.java), connection, BIND_AUTO_CREATE)
+    }
 
-            override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
-                service = RecordService.of(binder)
-                serviceLiveData.value = service
-            }
-        }, BIND_AUTO_CREATE)
+    override fun onCleared() {
+        getApplication<Application>().unbindService(connection)
     }
 
     fun onClickButton(recordName: String) {
-        if (service.isRecording().value == true) {
-            service.rename(recordName)
-            stopListener?.invoke(service.stop())
+        if (service?.isRecording() == true) {
+            service?.rename(recordName)
         } else {
-            service.start(recordName)
+            service?.start(recordName)
         }
     }
 
     fun stop(recordName: String) {
-        service.rename(recordName)
-        service.stop()
+        service?.rename(recordName)
+        service?.stop()
     }
 
-    fun isRecording() = service.isRecording().value ?: false
+    fun isRecording() = service?.isRecording() == true
 }
