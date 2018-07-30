@@ -21,7 +21,7 @@ import androidx.lifecycle.Observer
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.ui.MainActivity
-import java.util.*
+import java.util.UUID
 
 class RecordService : Service(), IRecordService {
     companion object {
