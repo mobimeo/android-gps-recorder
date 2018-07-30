@@ -22,21 +22,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) startRecordsFragment()
 
-        application.bindService(Intent(application, RecordService::class.java), object : ServiceConnection {
-            override fun onServiceDisconnected(p0: ComponentName?) {
-            }
+        bindService(Intent(application, RecordService::class.java), object : ServiceConnection {
+            override fun onServiceDisconnected(name: ComponentName?) = Unit
 
-            override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
+            override fun onServiceConnected(name: ComponentName, binder: IBinder) {
                 if (RecordService.of(binder).isRecording()) startRecordFragment()
                 unbindService(this)
             }
         }, BIND_AUTO_CREATE)
 
-        application.bindService(Intent(application, PlayService::class.java), object : ServiceConnection {
-            override fun onServiceDisconnected(p0: ComponentName?) {
-            }
+        bindService(Intent(application, PlayService::class.java), object : ServiceConnection {
+            override fun onServiceDisconnected(name: ComponentName?) = Unit
 
-            override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
+            override fun onServiceConnected(name: ComponentName, binder: IBinder) {
                 val playService = PlayService.of(binder)
                 if (playService.isPlaying()) startPlaybackFragment(Bundle().apply {
                     putParcelable("record", playService.current())
