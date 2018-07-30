@@ -22,13 +22,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 
-private const val ACTION_STOP = "stop"
-
 class PlayService : Service(), IPlayService {
 
     companion object {
         private const val NOTIFICATION_ID = 0x4654
         private const val NOTIFICATION_CHANNEL_ID = "play"
+        private const val ACTION_STOP = "stop"
 
         fun of(binder: IBinder): IPlayService {
             return (binder as PlayBinder).service
@@ -47,6 +46,22 @@ class PlayService : Service(), IPlayService {
                 }
             }
         }
+    }
+
+    private val intent by lazy {
+        Intent(this, MainActivity::class.java).apply {
+            action = Intent.ACTION_MAIN
+            addCategory(Intent.CATEGORY_LAUNCHER)
+        }
+    }
+    private val pendingIntent by lazy {
+        PendingIntent.getActivity(this, 0, intent, 0)
+    }
+    private val stopSelfIntent by lazy {
+        Intent(this, PlayService::class.java).apply { action = ACTION_STOP }
+    }
+    private val selfStopPendingIntent by lazy {
+        PendingIntent.getService(this, 0, stopSelfIntent, FLAG_CANCEL_CURRENT)
     }
 
     private val locationsDao by lazy { db.locationsDao() }
@@ -72,14 +87,6 @@ class PlayService : Service(), IPlayService {
     override fun start() {
 //        client.setMockMode(true)
         current?.let {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                action = Intent.ACTION_MAIN
-                addCategory(Intent.CATEGORY_LAUNCHER)
-            }
-            val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-            val stopSelfIntent = Intent(this, PlayService::class.java)
-            stopSelfIntent.action = ACTION_STOP
-            val selfStopPendingIntent = PendingIntent.getService(this, 0, stopSelfIntent, FLAG_CANCEL_CURRENT)
             val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                     .setContentTitle(getString(R.string.service_playing))
                     .setContentText(getString(R.string.service_playing_message))

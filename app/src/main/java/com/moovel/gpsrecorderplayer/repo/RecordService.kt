@@ -23,12 +23,11 @@ import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import java.util.UUID
 
-private const val ACTION_STOP = "stop"
-
 class RecordService : Service(), IRecordService {
     companion object {
         private const val NOTIFICATION_ID = 0x4554
         private const val NOTIFICATION_CHANNEL_ID = "record"
+        private const val ACTION_STOP = "stop"
 
         fun of(binder: IBinder): IRecordService {
             return (binder as RecordBinder).service
@@ -68,6 +67,22 @@ class RecordService : Service(), IRecordService {
                         gsm,
                         level
                 )
+    }
+
+    private val intent by lazy {
+        Intent(this, MainActivity::class.java).apply {
+            action = Intent.ACTION_MAIN
+            addCategory(Intent.CATEGORY_LAUNCHER)
+        }
+    }
+    private val pendingIntent by lazy {
+        PendingIntent.getActivity(this, 0, intent, 0)
+    }
+    private val stopSelfIntent by lazy {
+        Intent(this, RecordService::class.java).apply { action = ACTION_STOP }
+    }
+    private val selfStopPendingIntent by lazy {
+        PendingIntent.getService(this, 0, stopSelfIntent, FLAG_CANCEL_CURRENT)
     }
 
     private val db by lazy { RecordsDatabase.getInstance(applicationContext) }
@@ -120,14 +135,6 @@ class RecordService : Service(), IRecordService {
         record?.insertRecordAsync()
         location.observeForever(locationObserver)
         signal.observeForever(signalObserver)
-        val intent = Intent(this, MainActivity::class.java).apply {
-            action = Intent.ACTION_MAIN
-            addCategory(Intent.CATEGORY_LAUNCHER)
-        }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
-        val stopSelfIntent = Intent(this, RecordService::class.java)
-        stopSelfIntent.action = ACTION_STOP
-        val selfStopPendingIntent = PendingIntent.getService(this, 0, stopSelfIntent, FLAG_CANCEL_CURRENT)
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(getString(R.string.service_recording))
                 .setContentText(getString(R.string.service_recording_message))
