@@ -48,7 +48,7 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
 
     fun onClickButton(recordName: String) {
         if (service?.isRecording() == true) {
-            service?.rename(recordName)
+            stop(recordName)
         } else {
             service?.start(recordName)
         }
