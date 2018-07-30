@@ -4,6 +4,8 @@ import android.app.Notification.VISIBILITY_PUBLIC
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.app.Service
 import android.content.Intent
 import android.location.Location
@@ -18,6 +20,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.ui.MainActivity
+
+private const val ACTION_STOP = "stop"
 
 class PlayService : Service(), IPlayService {
 
@@ -67,7 +72,21 @@ class PlayService : Service(), IPlayService {
     override fun start() {
 //        client.setMockMode(true)
         current?.let {
-            val notification = NotificationCompat.Builder(this, PlayService.NOTIFICATION_CHANNEL_ID).build()
+            val intent = Intent(this, MainActivity::class.java).apply {
+                action = Intent.ACTION_MAIN
+                addCategory(Intent.CATEGORY_LAUNCHER)
+            }
+            val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+            val stopSelfIntent = Intent(this, PlayService::class.java)
+            stopSelfIntent.action = ACTION_STOP
+            val selfStopPendingIntent = PendingIntent.getService(this, 0, stopSelfIntent, FLAG_CANCEL_CURRENT)
+            val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                    .setContentTitle(getString(R.string.service_playing))
+                    .setContentText(getString(R.string.service_playing_message))
+                    .setSmallIcon(R.drawable.ic_play_arrow_white_24dp)
+                    .setContentIntent(pendingIntent)
+                    .addAction(R.drawable.ic_clear_white_24dp, getString(R.string.universal_stop), selfStopPendingIntent)
+                    .build()
             startForeground(PlayService.NOTIFICATION_ID, notification)
             ticker.start()
             locationHandler.start(it)
@@ -82,6 +101,11 @@ class PlayService : Service(), IPlayService {
         ticker.stop()
         ticker.reset()
         playing.value = false
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (ACTION_STOP == intent?.action) stop()
+        return START_STICKY_COMPATIBILITY
     }
 
     override fun current(): Record? {

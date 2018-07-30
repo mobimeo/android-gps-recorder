@@ -23,7 +23,7 @@ import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import java.util.UUID
 
-private const val ACTION_FORCE_KILL = "force_stop"
+private const val ACTION_STOP = "stop"
 
 class RecordService : Service(), IRecordService {
     companion object {
@@ -122,12 +122,11 @@ class RecordService : Service(), IRecordService {
         signal.observeForever(signalObserver)
         val intent = Intent(this, MainActivity::class.java).apply {
             action = Intent.ACTION_MAIN
-            putExtra("service", "record")
             addCategory(Intent.CATEGORY_LAUNCHER)
         }
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val stopSelfIntent = Intent(this, RecordService::class.java)
-        stopSelfIntent.action = ACTION_FORCE_KILL
+        stopSelfIntent.action = ACTION_STOP
         val selfStopPendingIntent = PendingIntent.getService(this, 0, stopSelfIntent, FLAG_CANCEL_CURRENT)
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(getString(R.string.service_recording))
@@ -205,7 +204,7 @@ class RecordService : Service(), IRecordService {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (ACTION_FORCE_KILL == intent?.action) stop()
+        if (ACTION_STOP == intent?.action) stop()
         return START_STICKY_COMPATIBILITY
     }
 

@@ -24,6 +24,8 @@
     <string name="record_signal_type">Signaltyp</string>
     <string name="record_signal_class">Signalklasse</string>
     <string name="record_signal_strength">Signalstärke</string>
+    <string name="service_playing">Abspielen</string>
+    <string name="service_playing_message">GPS Mock Position wird abgespielt.</string>
     <string name="service_recording">Aufzeichnen</string>
     <string name="service_recording_message">GPS und Mobilfunkstärke wird aufgezeichnet.</string>
     <string name="records_record">Aufnahme</string>
