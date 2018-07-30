@@ -21,7 +21,7 @@ import androidx.lifecycle.Observer
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.ui.MainActivity
-import java.util.UUID
+import java.util.*
 
 class RecordService : Service(), IRecordService {
     companion object {
@@ -69,19 +69,15 @@ class RecordService : Service(), IRecordService {
                 )
     }
 
-    private val intent by lazy {
-        Intent(this, MainActivity::class.java).apply {
+    private val startActivityIntent by lazy {
+        val intent = Intent(this, MainActivity::class.java).apply {
             action = Intent.ACTION_MAIN
             addCategory(Intent.CATEGORY_LAUNCHER)
         }
-    }
-    private val pendingIntent by lazy {
         PendingIntent.getActivity(this, 0, intent, 0)
     }
-    private val stopSelfIntent by lazy {
-        Intent(this, RecordService::class.java).apply { action = ACTION_STOP }
-    }
-    private val selfStopPendingIntent by lazy {
+    private val stopServiceIntent by lazy {
+        val stopSelfIntent = Intent(this, RecordService::class.java).apply { action = ACTION_STOP }
         PendingIntent.getService(this, 0, stopSelfIntent, FLAG_CANCEL_CURRENT)
     }
 
@@ -139,8 +135,8 @@ class RecordService : Service(), IRecordService {
                 .setContentTitle(getString(R.string.service_recording))
                 .setContentText(getString(R.string.service_recording_message))
                 .setSmallIcon(R.drawable.ic_fiber_manual_record_white_24dp)
-                .setContentIntent(pendingIntent)
-                .addAction(R.drawable.ic_clear_white_24dp, getString(R.string.universal_stop), selfStopPendingIntent)
+                .setContentIntent(startActivityIntent)
+                .addAction(R.drawable.ic_clear_white_24dp, getString(R.string.universal_stop), stopServiceIntent)
                 .build()
         startForeground(NOTIFICATION_ID, notification)
         recording.value = true
