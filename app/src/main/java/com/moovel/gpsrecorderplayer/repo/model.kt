@@ -21,6 +21,12 @@ data class Record(
         val created: Long = SystemClock.elapsedRealtimeNanos()
 ) : Parcelable
 
+internal interface RecordStamp {
+    val recordId: String
+    val index: Int
+    val created: Long
+}
+
 @Entity(
         tableName = "locations",
         primaryKeys = ["index", "record_id"],
@@ -29,9 +35,9 @@ data class Record(
 )
 data class LocationStamp(
         @ColumnInfo(name = "record_id")
-        val recordId: String,
-        val index: Int,
-        val created: Long = SystemClock.elapsedRealtime(),
+        override val recordId: String,
+        override val index: Int,
+        override val created: Long = SystemClock.elapsedRealtime(),
 
         val provider: String,
         val time: Long,
@@ -45,7 +51,7 @@ data class LocationStamp(
         val verticalAccuracyMeters: Float? = null,
         val speedAccuracyMetersPerSecond: Float? = null,
         val bearingAccuracyDegrees: Float? = null
-)
+) : RecordStamp
 
 @Entity(
         tableName = "signals",
@@ -55,9 +61,9 @@ data class LocationStamp(
 )
 data class SignalStamp(
         @ColumnInfo(name = "record_id")
-        val recordId: String,
-        val index: Int,
-        val created: Long =  SystemClock.elapsedRealtimeNanos(),
+        override val recordId: String,
+        override val index: Int,
+        override val created: Long = SystemClock.elapsedRealtimeNanos(),
 
         @ColumnInfo(name = "network_type")
         val networkType: Int,
@@ -81,7 +87,7 @@ data class SignalStamp(
         val evdoSnr: Int,
         val gsm: Boolean = false,
         val level: Int
-)
+) : RecordStamp
 
 data class Position(
         val latitude: Double,

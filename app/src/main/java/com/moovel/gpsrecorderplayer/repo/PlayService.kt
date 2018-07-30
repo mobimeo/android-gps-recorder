@@ -40,11 +40,15 @@ class PlayService : Service(), IPlayService {
     private val locationHandler by lazy {
         LocationHandler(db) { recordId: String, location: Location? ->
             if (recordId == current?.id) {
-                if (location == null) {
-                    stop()
-                } else {
-                    publish(location)
-                }
+                publish(location)
+            }
+        }
+    }
+
+    private val signalHandler by lazy {
+        SignalHandler(db) { recordId: String, signal: Signal? ->
+            if (recordId == current?.id) {
+                publish(signal)
             }
         }
     }
@@ -63,6 +67,7 @@ class PlayService : Service(), IPlayService {
 
     private val locationsDao by lazy { db.locationsDao() }
     private val location = MutableLiveData<Location>()
+    private val signal = MutableLiveData<Signal>()
     private val playing = MutableLiveData<Boolean>()
     private var current: Record? = null
     private val polyline = MutableLiveData<List<LatLng>>()
@@ -95,6 +100,7 @@ class PlayService : Service(), IPlayService {
             startForeground(PlayService.NOTIFICATION_ID, notification)
             ticker.start()
             locationHandler.start(it)
+            signalHandler.start(it)
             playing.value = true
         }
     }
@@ -104,6 +110,7 @@ class PlayService : Service(), IPlayService {
         client.setMockMode(false)
         stopForeground(true)
         locationHandler.stop()
+        signalHandler.stop()
         ticker.stop()
         ticker.reset()
         playing.value = false
@@ -111,8 +118,24 @@ class PlayService : Service(), IPlayService {
 
     @SuppressLint("MissingPermission")
     private fun publish(location: Location?) {
-        client.setMockLocation(location)
-        this.location.value = location
+        if (location != null) {
+            client.setMockLocation(location)
+            this.location.value = location
+        } else {
+            stopWhenHandlerStopped()
+        }
+    }
+
+    private fun publish(signal: Signal?) {
+        if (signal != null) {
+            this.signal.value = signal
+        } else {
+            stopWhenHandlerStopped()
+        }
+    }
+
+    private fun stopWhenHandlerStopped() {
+        if (locationHandler.recordId == null && signalHandler.recordId == null) stop()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -141,8 +164,7 @@ class PlayService : Service(), IPlayService {
     }
 
     override fun signal(): LiveData<Signal> {
-        // FIXME
-        return MutableLiveData()
+        return signal
     }
 
     private fun setupNotificationChannel() {
@@ -166,70 +188,86 @@ class PlayService : Service(), IPlayService {
 
     private class PlayBinder(val service: PlayService) : Binder()
 
-    private class LocationHandler(
-            db: RecordsDatabase,
-            val notify: (recordId: String, location: Location?) -> Unit
-    ) {
-        private val mainHandler = Handler()
-        private val locationsDao = db.locationsDao()
-        private val handlerThread = HandlerThread("RecordService")
+    private abstract class RecordStampHandler<S : RecordStamp> {
+        private val handlerThread = HandlerThread("${javaClass.simpleName}Thread")
         private val handler = Handler(handlerThread.apply { start() }.looper)
-        private var locationIndex = 0
+        private var index = 0
 
-        private var record: Record? = null
-        private var timeDiff: Long? = null
+        var recordId: String? = null
+            private set
+        private var started: Long = SystemClock.elapsedRealtime()
 
-        fun destroy() {
-            stop()
-        }
+        protected abstract fun get(recordId: String, index: Int): S?
 
         @Synchronized
         fun start(record: Record) {
-            this.record = record
+            recordId = record.id
+            started = SystemClock.elapsedRealtime()
             handler.post {
-                val next = locationsDao.getByRecordIdAndIndex(record.id, 0)
-                emitAndNext(record.id, next)
+                initAndSchedule(record)
             }
         }
 
         @Synchronized
         fun stop() {
-            record = null
-            timeDiff = null
-            locationIndex = 0
+            recordId = null
+            index = 0
             handler.removeCallbacksAndMessages(null)
         }
 
+        private fun scheduleEmit(created: Long, stamp: S, delay: Long) {
+            handler.postDelayed({
+                emitAndScheduleNext(created, stamp)
+            }, delay)
+        }
+
         @Synchronized
-        private fun emitAndNext(recordId: String, stamp: LocationStamp?) {
-            if (recordId != record?.id) return // already stopped
-            if (stamp == null) {
-                stop()
-                emit(recordId, stamp)
-                return
-            }
-
-            if (timeDiff == null) timeDiff = System.currentTimeMillis() - stamp.time
-
-            emit(recordId, stamp)
-
-
-            handler.post {
-                val next = locationsDao.getByRecordIdAndIndex(recordId, stamp.index + 1)
+        private fun initAndSchedule(record: Record) {
+            if (recordId == record.id) {
+                val next = get(record.id, 0)
                 if (next == null) {
-                    emitAndNext(recordId, null)
-                    return@post
+                    emit(record.id, null)
+                    stop()
+                } else {
+                    scheduleEmit(record.created, next, delay(record.created, next))
                 }
-                val diff = timeDiff ?: return@post
-                val time = next.time + diff
-                val delay = Math.max(0, time - System.currentTimeMillis())
-                handler.postDelayed({
-                    emitAndNext(recordId, next)
-                }, delay)
             }
         }
 
-        private fun emit(recordId: String, stamp: LocationStamp?) {
+        @Synchronized
+        private fun emitAndScheduleNext(created: Long, stamp: S) {
+            if (recordId == stamp.recordId) {
+                emit(stamp.recordId, stamp)
+                val next = get(stamp.recordId, stamp.index + 1)
+                if (next == null) {
+                    emit(stamp.recordId, null)
+                    stop()
+                } else {
+                    scheduleEmit(created, next, delay(created, next))
+                }
+            }
+        }
+
+        private fun delay(created: Long, stamp: S): Long {
+            val diff = stamp.created - created
+            val elapsed = SystemClock.elapsedRealtime() - started
+            return diff - elapsed
+        }
+
+        protected abstract fun emit(recordId: String, stamp: S?)
+    }
+
+    private class LocationHandler(
+            db: RecordsDatabase,
+            val notify: (recordId: String, location: Location?) -> Unit
+    ) : RecordStampHandler<LocationStamp>() {
+        private val mainHandler = Handler()
+        private val locationsDao = db.locationsDao()
+
+        override fun get(recordId: String, index: Int): LocationStamp? =
+                locationsDao.getByRecordIdAndIndex(recordId, index)
+
+        override fun emit(recordId: String, stamp: LocationStamp?) {
             if (stamp == null) {
                 postNotify(recordId, null)
                 return
@@ -253,6 +291,42 @@ class PlayService : Service(), IPlayService {
 
         fun postNotify(recordId: String, location: Location?) {
             mainHandler.post { notify(recordId, location) }
+        }
+    }
+
+    private class SignalHandler(
+            db: RecordsDatabase,
+            val notify: (recordId: String, signal: Signal?) -> Unit
+    ) : RecordStampHandler<SignalStamp>() {
+        private val mainHandler = Handler()
+        private val signalsDao = db.signalsDao()
+
+        override fun get(recordId: String, index: Int): SignalStamp? =
+                signalsDao.getByRecordIdAndIndex(recordId, index)
+
+        override fun emit(recordId: String, stamp: SignalStamp?) {
+            if (stamp == null) {
+                postNotify(recordId, null)
+                return
+            }
+
+            val signal = Signal(stamp.networkType,
+                    stamp.serviceState,
+                    stamp.gsmSignalStrength,
+                    stamp.gsmBitErrorRate,
+                    stamp.cdmaDbm,
+                    stamp.cdmaEcio,
+                    stamp.evdoDbm,
+                    stamp.evdoEcio,
+                    stamp.evdoSnr,
+                    stamp.gsm,
+                    stamp.level)
+
+            postNotify(recordId, signal)
+        }
+
+        fun postNotify(recordId: String, signal: Signal?) {
+            mainHandler.post { notify(recordId, signal) }
         }
     }
 }
