@@ -18,3 +18,6 @@ fun Context.primaryTextColor(): Int {
     arr.recycle()
     return primaryTextColor
 }
+
+fun <T1, T2, R> notNull(o1: T1?, o2: T2?, block: (T1, T2) -> R): R? =
+        if (o1 != null && o2 != null) block(o1, o2) else null

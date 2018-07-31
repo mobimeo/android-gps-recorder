@@ -8,7 +8,7 @@ import android.telephony.TelephonyManager
 import androidx.lifecycle.LiveData
 import com.moovel.gpsrecorderplayer.repo.Signal
 
-internal class SignalLiveData(context: Context) : LiveData<Signal>() {
+internal class SignalLiveData(context: Context) : LiveData<Signal?>() {
 
     companion object {
         private const val EVENTS = PhoneStateListener.LISTEN_SIGNAL_STRENGTHS or

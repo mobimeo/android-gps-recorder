@@ -4,5 +4,5 @@ import androidx.lifecycle.LiveData
 import com.moovel.gpsrecorderplayer.repo.Signal
 
 interface SignalSource {
-    fun signal(): LiveData<Signal>
+    fun signal(): LiveData<Signal?>
 }

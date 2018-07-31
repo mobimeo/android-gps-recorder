@@ -27,8 +27,8 @@ import com.moovel.gpsrecorderplayer.repo.RecordStamp
 import com.moovel.gpsrecorderplayer.repo.RecordsDatabase
 import com.moovel.gpsrecorderplayer.repo.Signal
 import com.moovel.gpsrecorderplayer.repo.SignalStamp
-import com.moovel.gpsrecorderplayer.utils.async
 import com.moovel.gpsrecorderplayer.ui.MainActivity
+import com.moovel.gpsrecorderplayer.utils.async
 
 class PlayService : Service(), IPlayService {
 
@@ -73,11 +73,11 @@ class PlayService : Service(), IPlayService {
     }
 
     private val locationsDao by lazy { db.locationsDao() }
-    private val location = MutableLiveData<Location>()
-    private val signal = MutableLiveData<Signal>()
+    private val location = MutableLiveData<Location?>()
+    private val signal = MutableLiveData<Signal?>()
     private val playing = MutableLiveData<Boolean>()
     private var current: Record? = null
-    private val polyline = MutableLiveData<List<LatLng>>()
+    private val polyline = MutableLiveData<List<LatLng>?>()
     private val ticker = TickerLiveData()
 
     override fun onCreate() {
@@ -95,8 +95,9 @@ class PlayService : Service(), IPlayService {
 
     @SuppressLint("MissingPermission")
     override fun start() {
-        client.setMockMode(true)
         current?.let {
+            client.setMockMode(true)
+            startService(Intent(this, PlayService::class.java))
             val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                     .setContentTitle(getString(R.string.service_playing))
                     .setContentText(getString(R.string.service_playing_message))
@@ -121,6 +122,10 @@ class PlayService : Service(), IPlayService {
         ticker.stop()
         ticker.reset()
         playing.value = false
+        polyline.value = null
+        location.value = null
+        signal.value = null
+        stopSelf()
     }
 
     @SuppressLint("MissingPermission")
@@ -158,11 +163,11 @@ class PlayService : Service(), IPlayService {
         return playing
     }
 
-    override fun polyline(): LiveData<List<LatLng>> {
+    override fun polyline(): LiveData<List<LatLng>?> {
         return polyline
     }
 
-    override fun locations(): LiveData<Location> {
+    override fun locations(): LiveData<Location?> {
         return location
     }
 
@@ -170,7 +175,7 @@ class PlayService : Service(), IPlayService {
         return ticker
     }
 
-    override fun signal(): LiveData<Signal> {
+    override fun signal(): LiveData<Signal?> {
         return signal
     }
 
@@ -186,6 +191,8 @@ class PlayService : Service(), IPlayService {
 
     override fun onDestroy() {
         super.onDestroy()
+        locationHandler.destroy()
+        signalHandler.destroy()
         stop()
     }
 
@@ -262,6 +269,10 @@ class PlayService : Service(), IPlayService {
         }
 
         protected abstract fun emit(recordId: String, stamp: S?)
+
+        fun destroy() {
+            handlerThread.quitSafely()
+        }
     }
 
     private class LocationHandler(

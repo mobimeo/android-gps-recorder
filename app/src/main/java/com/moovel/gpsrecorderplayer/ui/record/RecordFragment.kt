@@ -19,12 +19,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.ui.BackPressable
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import com.moovel.gpsrecorderplayer.utils.dpToPx
 import com.moovel.gpsrecorderplayer.utils.latLng
 import com.moovel.gpsrecorderplayer.utils.observe
 import com.moovel.gpsrecorderplayer.utils.setLocationSource
+import com.moovel.gpsrecorderplayer.utils.zoomToPolyline
 import kotlinx.android.synthetic.main.record_fragment.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter.ISO_DATE
@@ -34,6 +36,9 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
     private lateinit var viewModel: RecordViewModel
     private var googleMap: GoogleMap? = null
     private var polyline: Polyline? = null
+    private var record: Record? = null
+
+    private val mainActivity: MainActivity? get() = activity as MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +56,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
         edit_record_name.setText(getString(R.string.record_new_record, LocalDate.now().format(ISO_DATE), 1))
         edit_record_name.requestFocus()
         edit_record_name.setSelection(edit_record_name.text.length)
-        back_button.setOnClickListener { if (!onBackPressed()) mainActivity()?.startRecordsFragment() }
+        back_button.setOnClickListener { if (!onBackPressed()) mainActivity?.startRecordsFragment() }
     }
 
     @SuppressLint("MissingPermission")
@@ -70,12 +75,19 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
         viewModel = ViewModelProviders.of(this).get(RecordViewModel::class.java)
         viewModel.locationLiveData.observe(this) { location ->
             location_view.location = location
-            googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, 17f))
+            val cameraUpdate = location?.latLng?.let { CameraUpdateFactory.newLatLngZoom(it, 17f) }
+            cameraUpdate?.let { googleMap?.moveCamera(it) }
         }
 
         viewModel.signalLiveData.observe(this) { signal -> location_view.signal = signal }
 
-        record_button.setOnClickListener { viewModel.onClickButton(edit_record_name.editableText.toString()) }
+        record_button.setOnClickListener {
+            if (viewModel.isRecording()) {
+                viewModel.stop(edit_record_name.editableText.toString())
+            } else {
+                record = viewModel.start(edit_record_name.editableText.toString())
+            }
+        }
         viewModel.recordingLiveData.observe(this, Observer<Boolean> { recording ->
             record_button.setImageDrawable(requireContext().getDrawable(when (recording) {
                 true -> R.drawable.ic_stop_white_24dp
@@ -89,7 +101,13 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
             timer.visibility = if (it == null) GONE else VISIBLE
         }
 
-        viewModel.polyline.observe(this) { updatePolyline(it) }
+        viewModel.polyline.observe(this, ::updatePolyline)
+
+        viewModel.recordingLiveData.observe(this) { recording ->
+            val r = record
+            record = null
+            if (r != null && !recording) mainActivity?.startPlaybackFragment(r)
+        }
     }
 
     override fun onBackPressed(): Boolean {
@@ -102,17 +120,16 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
 
     override fun onStopClicked() {
         viewModel.stop(edit_record_name.editableText.toString())
-        mainActivity()?.startRecordsFragment()
+        mainActivity?.startRecordsFragment()
     }
 
-    private fun updatePolyline(points: List<LatLng>) {
+    private fun updatePolyline(points: List<LatLng>?) {
         val map = googleMap ?: return
-        polyline?.points = points
-        if (polyline == null) polyline = map.addPolyline(PolylineOptions().addAll(points))
-    }
-
-    private fun mainActivity(): MainActivity? {
-        if (!isResumed) return null
-        return activity as MainActivity
+        polyline?.remove()
+        polyline = null
+        points?.let {
+            polyline = map.addPolyline(PolylineOptions().addAll(it))
+            map.zoomToPolyline(it)
+        }
     }
 }

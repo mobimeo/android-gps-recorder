@@ -6,12 +6,12 @@ import androidx.room.Query
 
 @Dao
 internal interface RecordsDao : BaseDao<Record> {
-    @Query("SELECT * from records")
+    @Query("SELECT * from records ORDER by start DESC")
     fun get(): List<Record>
+
+    @Query("SELECT * from records ORDER by start DESC")
+    fun getAsLiveData(): LiveData<List<Record>>
 
     @Query("SELECT * from records WHERE id = :id")
     fun getById(id: String): Record?
-
-    @Query("SELECT * from records")
-    fun getAsLiveData(): LiveData<List<Record>>
 }

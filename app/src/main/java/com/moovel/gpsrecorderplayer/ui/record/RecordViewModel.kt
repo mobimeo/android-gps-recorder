@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
+import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.service.IRecordService
 import com.moovel.gpsrecorderplayer.service.RecordService
 import com.moovel.gpsrecorderplayer.repo.Signal
@@ -20,8 +21,8 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
 
     private val serviceLiveData: MutableLiveData<IRecordService?> = MutableLiveData()
 
-    val locationLiveData: LiveData<Location> = serviceLiveData.switchMap { it?.locations() }
-    val signalLiveData: LiveData<Signal> = serviceLiveData.switchMap { it?.signal() }
+    val locationLiveData: LiveData<Location?> = serviceLiveData.switchMap { it?.locations() }
+    val signalLiveData: LiveData<Signal?> = serviceLiveData.switchMap { it?.signal() }
     val recordingLiveData: LiveData<Boolean> = serviceLiveData.switchMap { it?.recording() }
     val tickerLiveData: LiveData<Long?> = serviceLiveData.switchMap { it?.ticker() }
     val polyline: LiveData<List<LatLng>> = serviceLiveData.switchMap { it?.polyline() }
@@ -46,12 +47,8 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
         getApplication<Application>().unbindService(connection)
     }
 
-    fun onClickButton(recordName: String) {
-        if (service?.isRecording() == true) {
-            stop(recordName)
-        } else {
-            service?.start(recordName)
-        }
+    fun start(name: String): Record? {
+        return service?.start(name)
     }
 
     fun stop(recordName: String) {

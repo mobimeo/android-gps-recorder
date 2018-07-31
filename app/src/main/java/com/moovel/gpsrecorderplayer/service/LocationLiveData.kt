@@ -8,7 +8,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 
-internal class LocationLiveData(context: Context) : LiveData<Location>() {
+internal class LocationLiveData(context: Context) : LiveData<Location?>() {
     companion object {
         private val locationRequest: LocationRequest
             get() {

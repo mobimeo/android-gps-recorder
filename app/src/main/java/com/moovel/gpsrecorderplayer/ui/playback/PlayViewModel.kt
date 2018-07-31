@@ -10,11 +10,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
+import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.repo.RecordsDatabase
 import com.moovel.gpsrecorderplayer.serialization.Exporter
 import com.moovel.gpsrecorderplayer.service.IPlayService
 import com.moovel.gpsrecorderplayer.service.PlayService
-import com.moovel.gpsrecorderplayer.repo.Record
-import com.moovel.gpsrecorderplayer.repo.RecordsDatabase
 import com.moovel.gpsrecorderplayer.utils.async
 import com.moovel.gpsrecorderplayer.utils.switchMap
 
@@ -22,19 +22,25 @@ class PlayViewModel(application: Application) : AndroidViewModel(application) {
 
     private val service: MutableLiveData<IPlayService?> = MutableLiveData()
 
+    private var pendingRecord: Record? = null
+
     val location = service.switchMap { it?.locations() }
     val signal = service.switchMap { it?.signal() }
     val playing: LiveData<Boolean> = service.switchMap { it?.playing() }
     val tickerLiveData: LiveData<Long?> = service.switchMap { it?.ticker() }
-    val polyline: LiveData<List<LatLng>> = service.switchMap { it?.polyline() }
+    val polyline: LiveData<List<LatLng>?> = service.switchMap { it?.polyline() }
 
     private val connection = object : ServiceConnection {
-        override fun onServiceDisconnected(p0: ComponentName?) {
+        override fun onServiceDisconnected(name: ComponentName?) {
             service.value = null
         }
 
-        override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
-            service.value = PlayService.of(binder)
+        override fun onServiceConnected(name: ComponentName, binder: IBinder) {
+            val srv = PlayService.of(binder)
+            service.value = srv
+            val record = pendingRecord
+            pendingRecord = null
+            record?.let { srv.initialize(it) }
         }
     }
 
@@ -47,7 +53,12 @@ class PlayViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun initialize(record: Record) {
-        service.observeForever { service -> service?.initialize(record) }
+        val srv = service.value
+        if (srv != null) {
+            srv.initialize(record)
+        } else {
+            pendingRecord = record
+        }
     }
 
     fun play() {

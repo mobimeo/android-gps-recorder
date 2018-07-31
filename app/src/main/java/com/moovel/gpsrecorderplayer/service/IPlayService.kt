@@ -12,5 +12,5 @@ interface IPlayService : LocationSource, SignalSource {
     fun current(): Record?
     fun playing(): LiveData<Boolean>
     fun isPlaying(): Boolean
-    fun polyline(): LiveData<List<LatLng>>
+    fun polyline(): LiveData<List<LatLng>?>
 }

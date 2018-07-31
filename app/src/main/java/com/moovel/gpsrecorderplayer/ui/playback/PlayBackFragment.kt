@@ -29,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.moovel.gpsrecorderplayer.BuildConfig
 import com.moovel.gpsrecorderplayer.R
 import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.ui.BackPressable
 import com.moovel.gpsrecorderplayer.ui.DeleteDialog
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import com.moovel.gpsrecorderplayer.utils.dpToPx
@@ -38,13 +39,14 @@ import com.moovel.gpsrecorderplayer.utils.setLocationSource
 import com.moovel.gpsrecorderplayer.utils.zoomToPolyline
 import kotlinx.android.synthetic.main.playback_fragment.*
 
-class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
-
+class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback, BackPressable {
     private lateinit var viewModel: PlayViewModel
 
     private var googleMap: GoogleMap? = null
     private var polyline: Polyline? = null
     private val record: Record? get() = arguments?.getParcelable("record")
+
+    private val mainActivity: MainActivity? get() = activity as? MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +84,10 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
             DeleteDialog.instance(R.string.playback_delete_prompt).show(childFragmentManager, "delete")
         }
 
-        back_button.setOnClickListener { mainActivity().startRecordsFragment() }
+        back_button.setOnClickListener {
+            viewModel.stop()
+            mainActivity?.startRecordsFragment()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -93,7 +98,8 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
 
         viewModel.location.observe(this) { location ->
             location_view.location = location
-            googleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(location.latLng, 17f))
+            val cameraUpdate = location?.latLng?.let { CameraUpdateFactory.newLatLngZoom(it, 17f) }
+            cameraUpdate?.let { googleMap?.moveCamera(it) }
         }
 
         viewModel.signal.observe(this) { signal -> location_view.signal = signal }
@@ -119,9 +125,7 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
             }))
         }
 
-        viewModel.polyline.observe(this) {
-            updatePolyline(it)
-        }
+        viewModel.polyline.observe(this, ::updatePolyline)
 
         viewModel.tickerLiveData.observe(this) {
             it?.let { timer.text = DateUtils.formatElapsedTime(it) }
@@ -131,7 +135,7 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
 
     override fun onDelete() {
         record?.let { viewModel.remove(it) }
-        mainActivity().startRecordsFragment()
+        mainActivity?.startRecordsFragment()
     }
 
     @SuppressLint("MissingPermission")
@@ -147,17 +151,20 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback {
         }
     }
 
-    private fun updatePolyline(points: List<LatLng>) {
+    private fun updatePolyline(points: List<LatLng>?) {
         val map = googleMap ?: return
-        polyline?.points = points
-
-        if (polyline == null) {
-            polyline = map.addPolyline(PolylineOptions().addAll(points))
+        polyline?.remove()
+        polyline = null
+        points?.let {
+            polyline = map.addPolyline(PolylineOptions().addAll(it))
+            map.zoomToPolyline(it)
         }
-        map.zoomToPolyline(points)
     }
 
-    private fun mainActivity() = (activity as MainActivity)
+    override fun onBackPressed(): Boolean {
+        viewModel.stop()
+        return false
+    }
 
     private fun hasLocationPermission() =
             requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED

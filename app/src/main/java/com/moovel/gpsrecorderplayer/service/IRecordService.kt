@@ -5,7 +5,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.repo.Record
 
 interface IRecordService : LocationSource, SignalSource {
-    fun start(name: String)
+    fun start(name: String): Record
     fun stop(): Record?
     fun current(): Record?
     fun rename(name: String)

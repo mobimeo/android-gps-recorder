@@ -6,16 +6,21 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.service.PlayService
 import com.moovel.gpsrecorderplayer.service.RecordService
 import com.moovel.gpsrecorderplayer.ui.playback.PlayBackFragment
 import com.moovel.gpsrecorderplayer.ui.record.RecordFragment
 import com.moovel.gpsrecorderplayer.ui.records.RecordsFragment
 import kotlinx.android.synthetic.main.records_fragment.*
+import java.lang.ref.SoftReference
 
 class MainActivity : AppCompatActivity() {
+
+    private val fragments = mutableMapOf<String, SoftReference<Fragment>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,9 +41,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onServiceConnected(name: ComponentName, binder: IBinder) {
                 val playService = PlayService.of(binder)
-                if (playService.isPlaying()) startPlaybackFragment(Bundle().apply {
-                    putParcelable("record", playService.current())
-                })
+                val record = playService.current()
+                record?.let { startPlaybackFragment(record) }
                 unbindService(this)
             }
         }, BIND_AUTO_CREATE)
@@ -58,8 +62,8 @@ class MainActivity : AppCompatActivity() {
         startFragment("record", { RecordFragment() })
     }
 
-    fun startPlaybackFragment(bundle: Bundle) {
-        startFragment("play", { PlayBackFragment() }, bundle)
+    fun startPlaybackFragment(record: Record) {
+        startFragment("play", { PlayBackFragment() }, bundleOf("record" to record))
     }
 
     fun startRecordsFragment() {
@@ -67,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startFragment(tag: String, factory: () -> Fragment, args: Bundle? = null) {
-        val fragment = supportFragmentManager.findFragmentByTag(tag) ?: factory()
+        val fragment = fragments[tag]?.get() ?: factory().also { fragments[tag] = SoftReference(it) }
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_holder, fragment.apply { arguments = args }, tag)

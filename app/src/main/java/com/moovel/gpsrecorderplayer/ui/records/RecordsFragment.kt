@@ -27,6 +27,8 @@ class RecordsFragment : Fragment(), DeleteDialog.Callback {
 
     private val adapter = RecordAdapter()
 
+    private val mainActivity: MainActivity? get() = activity as? MainActivity
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.records_fragment, container, false)
@@ -39,15 +41,13 @@ class RecordsFragment : Fragment(), DeleteDialog.Callback {
 
         create_record_button.setOnClickListener {
             if (hasLocationPermission()) {
-                mainActivity().startRecordFragment()
+                mainActivity?.startRecordFragment()
             } else {
                 requestPermissions(arrayOf(ACCESS_FINE_LOCATION), 0x5F3E)
             }
         }
 
-        adapter.clickListener = { record ->
-            (activity as MainActivity).startPlaybackFragment(Bundle().apply { putParcelable("record", record) })
-        }
+        adapter.clickListener = { record -> mainActivity?.startPlaybackFragment(record) }
 
         menu_button.setOnClickListener { bottom_drawer.open() }
 
@@ -104,8 +104,6 @@ class RecordsFragment : Fragment(), DeleteDialog.Callback {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (hasLocationPermission()) mainActivity().startRecordFragment()
+        if (hasLocationPermission()) mainActivity?.startRecordFragment()
     }
-
-    private fun mainActivity() = (activity as MainActivity)
 }

@@ -10,12 +10,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import java.lang.IllegalArgumentException
 
-fun GoogleMap.setLocationSource(source: LiveData<Location>) {
-    setLocationSource(object : LocationSource, Observer<Location> {
+fun GoogleMap.setLocationSource(source: LiveData<Location?>) {
+    setLocationSource(object : LocationSource, Observer<Location?> {
         private var listener: LocationSource.OnLocationChangedListener? = null
 
         override fun onChanged(t: Location?) {
-            listener?.onLocationChanged(t)
+            notNull(listener, t) { cb, l -> cb.onLocationChanged(l) }
         }
 
         override fun deactivate() {

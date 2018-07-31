@@ -109,14 +109,14 @@ class RecordService : Service(), IRecordService {
             polyline.value = value
         }
 
-    private val locationObserver = Observer<Location> {
+    private val locationObserver = Observer<Location?> {
         it?.let {
             polylineList = polylineList.plus(LatLng(it.latitude, it.longitude))
             record?.insertLocationAsync(locationIndex++, it)
         }
     }
 
-    private val signalObserver = Observer<Signal> {
+    private val signalObserver = Observer<Signal?> {
         it?.let {
             record?.insertSignalAsync(signalIndex++, it)
         }
@@ -130,10 +130,12 @@ class RecordService : Service(), IRecordService {
 
     override fun isRecording() = recording.value == true
 
-    override fun start(name: String) {
+    override fun start(name: String): Record {
         if (record != null) throw IllegalStateException("Stop recording before")
-        record = Record(UUID.randomUUID().toString(), name)
-        record?.insertRecordAsync()
+        startService(Intent(this, RecordService::class.java))
+        val record = Record(UUID.randomUUID().toString(), name)
+        this.record = record
+        record.insertRecordAsync()
         location.observeForever(locationObserver)
         signal.observeForever(signalObserver)
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
@@ -146,6 +148,7 @@ class RecordService : Service(), IRecordService {
         startForeground(NOTIFICATION_ID, notification)
         recording.value = true
         ticker.start()
+        return record
     }
 
     override fun stop(): Record? {
@@ -160,6 +163,7 @@ class RecordService : Service(), IRecordService {
         recording.value = false
         ticker.stop()
         ticker.reset()
+        stopSelf()
         return current
     }
 
@@ -181,11 +185,11 @@ class RecordService : Service(), IRecordService {
         return polyline
     }
 
-    override fun locations(): LiveData<Location> {
+    override fun locations(): LiveData<Location?> {
         return location
     }
 
-    override fun signal(): LiveData<Signal> {
+    override fun signal(): LiveData<Signal?> {
         return signal
     }
 
