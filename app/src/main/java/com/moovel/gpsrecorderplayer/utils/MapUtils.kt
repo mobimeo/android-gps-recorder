@@ -9,6 +9,7 @@ import com.google.android.gms.maps.LocationSource
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import java.lang.Exception
+import java.lang.IllegalArgumentException
 
 fun GoogleMap.setLocationSource(source: LiveData<Location>) {
     setLocationSource(object : LocationSource, Observer<Location> {
@@ -40,7 +41,7 @@ fun GoogleMap.zoomToPolyline(polyline: List<LatLng>) {
     polyline.forEach { boundsBuilder.include(it) }
     try {
         moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 24.dpToPx()))
-    } catch (e: Exception) {
+    } catch (e: IllegalArgumentException) {
         // can be ignored. Screen is too small to show the map
     }
 }
