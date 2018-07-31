@@ -40,7 +40,7 @@ fun GoogleMap.zoomToPolyline(polyline: List<LatLng>) {
     polyline.forEach { boundsBuilder.include(it) }
     try {
         moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 24.dpToPx()))
-    } catch (e: IllegalArgumentException) {
-        // can be ignored. Screen is too small to show the map
+    } catch (e: IllegalStateException) {
+        // FIXME Screen is too small to show the map
     }
 }
