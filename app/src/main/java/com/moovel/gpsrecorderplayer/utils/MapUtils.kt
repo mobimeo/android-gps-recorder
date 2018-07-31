@@ -8,7 +8,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.LocationSource
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import java.lang.Exception
 import java.lang.IllegalArgumentException
 
 fun GoogleMap.setLocationSource(source: LiveData<Location>) {
