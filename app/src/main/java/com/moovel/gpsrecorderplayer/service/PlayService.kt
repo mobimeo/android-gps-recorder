@@ -1,4 +1,4 @@
-package com.moovel.gpsrecorderplayer.repo
+package com.moovel.gpsrecorderplayer.service
 
 import android.annotation.SuppressLint
 import android.app.Notification.VISIBILITY_PUBLIC
@@ -21,6 +21,13 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.repo.LocationStamp
+import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.repo.RecordStamp
+import com.moovel.gpsrecorderplayer.repo.RecordsDatabase
+import com.moovel.gpsrecorderplayer.repo.Signal
+import com.moovel.gpsrecorderplayer.repo.SignalStamp
+import com.moovel.gpsrecorderplayer.utils.async
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 
 class PlayService : Service(), IPlayService {
@@ -97,7 +104,7 @@ class PlayService : Service(), IPlayService {
                     .setContentIntent(startActivityIntent)
                     .addAction(R.drawable.ic_clear_white_24dp, getString(R.string.universal_stop), stopServiceIntent)
                     .build()
-            startForeground(PlayService.NOTIFICATION_ID, notification)
+            startForeground(NOTIFICATION_ID, notification)
             ticker.start()
             locationHandler.start(it)
             signalHandler.start(it)

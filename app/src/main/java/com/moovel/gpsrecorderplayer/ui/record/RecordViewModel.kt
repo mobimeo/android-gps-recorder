@@ -11,8 +11,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
-import com.moovel.gpsrecorderplayer.repo.IRecordService
-import com.moovel.gpsrecorderplayer.repo.RecordService
+import com.moovel.gpsrecorderplayer.service.IRecordService
+import com.moovel.gpsrecorderplayer.service.RecordService
 import com.moovel.gpsrecorderplayer.repo.Signal
 import com.moovel.gpsrecorderplayer.utils.switchMap
 

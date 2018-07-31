@@ -1,4 +1,4 @@
-package com.moovel.gpsrecorderplayer.repo
+package com.moovel.gpsrecorderplayer.service
 
 import android.app.Notification.VISIBILITY_PUBLIC
 import android.app.NotificationChannel
@@ -20,6 +20,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.model.LatLng
 import com.moovel.gpsrecorderplayer.R
+import com.moovel.gpsrecorderplayer.repo.LocationStamp
+import com.moovel.gpsrecorderplayer.repo.Record
+import com.moovel.gpsrecorderplayer.repo.RecordsDatabase
+import com.moovel.gpsrecorderplayer.repo.Signal
+import com.moovel.gpsrecorderplayer.repo.SignalStamp
 import com.moovel.gpsrecorderplayer.ui.MainActivity
 import java.util.UUID
 

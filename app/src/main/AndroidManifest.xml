@@ -39,8 +39,8 @@
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
 
-        <service android:name=".repo.RecordService" />
-        <service android:name=".repo.PlayService" />
+        <service android:name=".service.RecordService" />
+        <service android:name=".service.PlayService" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

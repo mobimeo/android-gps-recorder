@@ -10,12 +10,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
-import com.moovel.gpsrecorderplayer.repo.Exporter
-import com.moovel.gpsrecorderplayer.repo.IPlayService
-import com.moovel.gpsrecorderplayer.repo.PlayService
+import com.moovel.gpsrecorderplayer.serialization.Exporter
+import com.moovel.gpsrecorderplayer.service.IPlayService
+import com.moovel.gpsrecorderplayer.service.PlayService
 import com.moovel.gpsrecorderplayer.repo.Record
 import com.moovel.gpsrecorderplayer.repo.RecordsDatabase
-import com.moovel.gpsrecorderplayer.repo.async
+import com.moovel.gpsrecorderplayer.utils.async
 import com.moovel.gpsrecorderplayer.utils.switchMap
 
 class PlayViewModel(application: Application) : AndroidViewModel(application) {

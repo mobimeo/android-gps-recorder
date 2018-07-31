@@ -1,4 +1,4 @@
-package com.moovel.gpsrecorderplayer.repo
+package com.moovel.gpsrecorderplayer.utils
 
 import android.os.Looper
 import java.util.concurrent.LinkedBlockingQueue

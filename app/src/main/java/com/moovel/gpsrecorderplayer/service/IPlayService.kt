@@ -1,7 +1,8 @@
-package com.moovel.gpsrecorderplayer.repo
+package com.moovel.gpsrecorderplayer.service
 
 import androidx.lifecycle.LiveData
 import com.google.android.gms.maps.model.LatLng
+import com.moovel.gpsrecorderplayer.repo.Record
 
 interface IPlayService : LocationSource, SignalSource {
     fun initialize(record: Record)

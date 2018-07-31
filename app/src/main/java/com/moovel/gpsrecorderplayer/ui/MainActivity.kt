@@ -8,8 +8,8 @@ import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.moovel.gpsrecorderplayer.R
-import com.moovel.gpsrecorderplayer.repo.PlayService
-import com.moovel.gpsrecorderplayer.repo.RecordService
+import com.moovel.gpsrecorderplayer.service.PlayService
+import com.moovel.gpsrecorderplayer.service.RecordService
 import com.moovel.gpsrecorderplayer.ui.playback.PlayBackFragment
 import com.moovel.gpsrecorderplayer.ui.record.RecordFragment
 import com.moovel.gpsrecorderplayer.ui.records.RecordsFragment

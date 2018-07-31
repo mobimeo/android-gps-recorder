@@ -1,4 +1,4 @@
-package com.moovel.gpsrecorderplayer.repo
+package com.moovel.gpsrecorderplayer.service
 
 import android.os.Handler
 import android.os.SystemClock
