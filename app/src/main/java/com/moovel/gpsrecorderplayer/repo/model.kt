@@ -18,7 +18,7 @@ data class Record(
         val id: String,
         val name: String,
         val start: Long = System.currentTimeMillis(),
-        val created: Long = SystemClock.elapsedRealtimeNanos()
+        val created: Long = SystemClock.elapsedRealtime()
 ) : Parcelable
 
 internal interface RecordStamp {
@@ -63,7 +63,7 @@ data class SignalStamp(
         @ColumnInfo(name = "record_id")
         override val recordId: String,
         override val index: Int,
-        override val created: Long = SystemClock.elapsedRealtimeNanos(),
+        override val created: Long = SystemClock.elapsedRealtime(),
 
         @ColumnInfo(name = "network_type")
         val networkType: Int,
