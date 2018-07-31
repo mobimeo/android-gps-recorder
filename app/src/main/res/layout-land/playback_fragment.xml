@@ -60,7 +60,6 @@
         android:layout_height="56dp"
         android:layout_gravity="bottom"
         app:backgroundTint="@color/colorPrimary"
-        app:fabAlignmentMode="end"
         app:fabCradleVerticalOffset="12dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
