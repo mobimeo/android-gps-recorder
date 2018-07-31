@@ -27,13 +27,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:importantForAutofill="no"
                 android:lines="1"
                 android:paddingHorizontal="16dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
-                android:textSize="32sp"
-                tools:text="25.05.2018 Aufnahme 1"
-                android:importantForAutofill="no"
-                tools:ignore="TextFields" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                tools:ignore="TextFields"
+                tools:text="25.05.2018 Aufnahme 1" />
 
             <com.moovel.gpsrecorderplayer.ui.widget.LocationView
                 android:id="@+id/location_view"

@@ -7,7 +7,7 @@
     <string name="records_delete_prompt">Ausgewählte Aufzeichnungen entfernen?</string>
     <string name="playback_delete_prompt">Diese Aufzeichnung entfernen?</string>
     <string name="universal_delete">entfernen</string>
-    <string name="record_new_record">%s Aufnahme %d</string>
+    <string name="record_new_record">%1$s Aufnahme</string>
     <string name="record_latitude">Latitude</string>
     <string name="record_longitude">Longitude</string>
     <string name="record_altitude">Altitude</string>

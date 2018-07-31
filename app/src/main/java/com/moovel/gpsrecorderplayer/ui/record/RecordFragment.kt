@@ -28,8 +28,8 @@ import com.moovel.gpsrecorderplayer.utils.observe
 import com.moovel.gpsrecorderplayer.utils.setLocationSource
 import com.moovel.gpsrecorderplayer.utils.zoomToPolyline
 import kotlinx.android.synthetic.main.record_fragment.*
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter.ISO_DATE
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog.Callback {
 
@@ -53,7 +53,8 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        edit_record_name.setText(getString(R.string.record_new_record, LocalDate.now().format(ISO_DATE), 1))
+        edit_record_name.setText(getString(R.string.record_new_record, LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern(" yyyy'-'MM'-'dd'T'HH':'mm"))))
         edit_record_name.requestFocus()
         edit_record_name.setSelection(edit_record_name.text.length)
         back_button.setOnClickListener { if (!onBackPressed()) mainActivity?.startRecordsFragment() }

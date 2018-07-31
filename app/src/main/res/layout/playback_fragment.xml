@@ -31,9 +31,8 @@
                 android:enabled="false"
                 android:lines="1"
                 android:paddingHorizontal="16dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textColor="#333"
-                android:textSize="32sp"
                 tools:ignore="TextFields"
                 tools:text="25.05.2018 Aufnahme 1" />
 

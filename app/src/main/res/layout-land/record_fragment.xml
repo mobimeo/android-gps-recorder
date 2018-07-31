@@ -29,8 +29,7 @@
                 android:importantForAutofill="no"
                 android:lines="1"
                 android:paddingHorizontal="16dp"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
-                android:textSize="32sp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 tools:ignore="TextFields"
                 tools:text="25.05.2018 Aufnahme 1" />
 
