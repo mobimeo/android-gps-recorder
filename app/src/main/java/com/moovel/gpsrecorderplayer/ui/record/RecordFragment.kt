@@ -54,7 +54,7 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         edit_record_name.setText(getString(R.string.record_new_record, LocalDateTime.now().format(
-                DateTimeFormatter.ofPattern(" yyyy'-'MM'-'dd'T'HH':'mm"))))
+                DateTimeFormatter.ofPattern(" yyyy'-'MM'-'dd HH':'mm"))))
         edit_record_name.requestFocus()
         edit_record_name.setSelection(edit_record_name.text.length)
         back_button.setOnClickListener { if (!onBackPressed()) mainActivity?.startRecordsFragment() }
