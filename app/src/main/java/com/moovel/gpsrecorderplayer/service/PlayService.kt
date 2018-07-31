@@ -40,6 +40,34 @@ class PlayService : Service(), IPlayService {
         fun of(binder: IBinder): IPlayService {
             return (binder as PlayBinder).service
         }
+
+        private fun LocationStamp.toLocation(): Location {
+            val l = Location("MOCK")
+            l.time = System.currentTimeMillis()
+            l.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
+            l.latitude = latitude
+            l.longitude = longitude
+            altitude?.let { l.altitude = it }
+            speed?.let { l.speed = it }
+            bearing?.let { l.bearing = it }
+            bearingAccuracyDegrees?.let { l.bearingAccuracyDegrees = it }
+            speedAccuracyMetersPerSecond?.let { l.speedAccuracyMetersPerSecond = it }
+            horizontalAccuracyMeters?.let { l.accuracy = it }
+            verticalAccuracyMeters?.let { l.verticalAccuracyMeters = it }
+            return l
+        }
+
+        private fun SignalStamp.toSignal(): Signal = Signal(networkType,
+                serviceState,
+                gsmSignalStrength,
+                gsmBitErrorRate,
+                cdmaDbm,
+                cdmaEcio,
+                evdoDbm,
+                evdoEcio,
+                evdoSnr,
+                gsm,
+                level)
     }
 
     private val db by lazy { RecordsDatabase.getInstance(applicationContext) }
@@ -73,6 +101,7 @@ class PlayService : Service(), IPlayService {
     }
 
     private val locationsDao by lazy { db.locationsDao() }
+    private val signalsDao by lazy { db.signalsDao() }
     private val location = MutableLiveData<Location?>()
     private val signal = MutableLiveData<Signal?>()
     private val playing = MutableLiveData<Boolean>()
@@ -89,8 +118,13 @@ class PlayService : Service(), IPlayService {
     override fun isPlaying() = playing.value == true
 
     override fun initialize(record: Record) {
+        stop()
         current = record
-        async { polyline.postValue(locationsDao.getPolyline(record.id).map { LatLng(it.latitude, it.longitude) }) }
+        async {
+            polyline.postValue(locationsDao.getPolyline(record.id).map { LatLng(it.latitude, it.longitude) })
+            location.postValue(locationsDao.getByRecordIdAndIndex(record.id, 0)?.toLocation())
+            signal.postValue(signalsDao.getByRecordIdAndIndex(record.id, 0)?.toSignal())
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -113,18 +147,22 @@ class PlayService : Service(), IPlayService {
         }
     }
 
+    override fun stop() = stop(false)
+
     @SuppressLint("MissingPermission")
-    override fun stop() {
+    fun stop(clearValues: Boolean = true) {
         client.setMockMode(false)
         stopForeground(true)
         locationHandler.stop()
         signalHandler.stop()
         ticker.stop()
-        ticker.reset()
         playing.value = false
-        polyline.value = null
-        location.value = null
-        signal.value = null
+        if (clearValues) {
+            ticker.reset()
+            polyline.value = null
+            location.value = null
+            signal.value = null
+        }
         stopSelf()
     }
 
@@ -147,7 +185,7 @@ class PlayService : Service(), IPlayService {
     }
 
     private fun stopWhenHandlerStopped() {
-        if (locationHandler.recordId == null && signalHandler.recordId == null) stop()
+        if (locationHandler.recordId == null && signalHandler.recordId == null) stop(false)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -291,18 +329,7 @@ class PlayService : Service(), IPlayService {
                 return
             }
 
-            val l = Location("MOCK")
-            l.time = System.currentTimeMillis()
-            l.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
-            l.latitude = stamp.latitude
-            l.longitude = stamp.longitude
-            stamp.altitude?.let { l.altitude = it }
-            stamp.speed?.let { l.speed = it }
-            stamp.bearing?.let { l.bearing = it }
-            stamp.bearingAccuracyDegrees?.let { l.bearingAccuracyDegrees = it }
-            stamp.speedAccuracyMetersPerSecond?.let { l.speedAccuracyMetersPerSecond = it }
-            stamp.horizontalAccuracyMeters?.let { l.accuracy = it }
-            stamp.verticalAccuracyMeters?.let { l.verticalAccuracyMeters = it }
+            val l = stamp.toLocation()
 
             postNotify(recordId, l)
         }
@@ -328,17 +355,7 @@ class PlayService : Service(), IPlayService {
                 return
             }
 
-            val signal = Signal(stamp.networkType,
-                    stamp.serviceState,
-                    stamp.gsmSignalStrength,
-                    stamp.gsmBitErrorRate,
-                    stamp.cdmaDbm,
-                    stamp.cdmaEcio,
-                    stamp.evdoDbm,
-                    stamp.evdoEcio,
-                    stamp.evdoSnr,
-                    stamp.gsm,
-                    stamp.level)
+            val signal = stamp.toSignal()
 
             postNotify(recordId, signal)
         }
