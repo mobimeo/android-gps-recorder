@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.MainActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/records_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="56dp"
+        android:clipToPadding="false"
+        android:paddingVertical="32dp" />
+
+    <LinearLayout
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="56dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_animation_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="location.json"
+            app:lottie_loop="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/records_new_record"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/records_record_gps_positions"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    </LinearLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottom_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabAlignmentMode="end"
+        app:fabCradleVerticalOffset="12dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/menu_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/records_menu"
+                android:focusable="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_menu_white_24dp" />
+
+            <ImageView
+                android:id="@+id/clear_selection_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/menu_button"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/universal_cancel"
+                android:focusable="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_clear_white_24dp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/share_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/universal_share"
+                android:focusable="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_share_white_24dp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/delete_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/share_button"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/universal_delete"
+                android:focusable="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_delete_white_24dp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/create_record_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:src="@drawable/ic_add_white_24dp"
+        app:layout_anchor="@+id/bottom_appbar" />
+
+    <com.moovel.gpsrecorderplayer.ui.widget.BottomDrawer
+        android:id="@+id/bottom_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="16dp"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_top_corners"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#eee" />
+
+            <TextView
+                android:id="@+id/open_source_menu_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="24dp"
+                android:text="@string/records_open_source_licenses"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+            <!-- FIXME inflate menu instead and i18n-->
+
+        </LinearLayout>
+
+    </com.moovel.gpsrecorderplayer.ui.widget.BottomDrawer>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

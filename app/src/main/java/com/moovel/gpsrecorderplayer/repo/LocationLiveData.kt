@@ -22,7 +22,7 @@ internal class LocationLiveData(context: Context) : LiveData<Location>() {
     private val client = FusedLocationProviderClient(context.applicationContext)
 
     override fun onActive() {
-        client.lastLocation.addOnSuccessListener { onLocation(it, true) }
+        client.lastLocation.addOnSuccessListener { it?.let {onLocation(it, true)} }
         client.requestLocationUpdates(locationRequest, locationCallback, null)
     }
 
