@@ -6,14 +6,14 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.1'
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         applicationId "com.moovel.gpsrecorderplayer"
         minSdkVersion 26
         targetSdkVersion 28
         versionCode System.getenv('BUILD_NUMBER') as Integer ?: 0
-        versionName "0.1.$versionCode"
+        versionName "1.0.$versionCode"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         kapt {
@@ -41,23 +41,24 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    implementation 'com.google.android.material:material:1.0.0-beta01'
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.recyclerview:recyclerview-selection:1.0.0-beta01'
-
+    implementation 'androidx.appcompat:appcompat:1.0.0-rc01'
+    implementation 'androidx.recyclerview:recyclerview-selection:1.0.0-rc01'
+    implementation 'androidx.core:core-ktx:1.0.0-rc01'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
-    implementation 'com.airbnb.android:lottie:2.5.5'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
 
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.material:material:1.0.0-rc01'
+
+    def play_version = "15.0.1"
+    implementation "com.google.android.gms:play-services-location:$play_version"
+    implementation "com.google.android.gms:play-services-maps:$play_version"
     implementation 'com.google.android.gms:play-services-oss-licenses:16.0.0'
 
-    def room_version = "2.0.0-beta01"
+    def room_version = "2.0.0-rc01"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
-    implementation 'androidx.core:core-ktx:1.0.0-beta01'
+    implementation 'com.airbnb.android:lottie:2.5.5'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
