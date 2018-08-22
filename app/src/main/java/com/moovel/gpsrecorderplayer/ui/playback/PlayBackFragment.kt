@@ -23,6 +23,7 @@
 package com.moovel.gpsrecorderplayer.ui.playback
 
 import android.Manifest
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.AppOpsManager.MODE_ALLOWED
@@ -61,7 +62,12 @@ import com.moovel.gpsrecorderplayer.utils.setLocationSource
 import com.moovel.gpsrecorderplayer.utils.zoomToPolyline
 import kotlinx.android.synthetic.main.playback_fragment.*
 
-class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback, BackPressable {
+class PlayBackFragment :
+        Fragment(),
+        OnMapReadyCallback,
+        DeleteDialog.Callback,
+        DevSettingsDialog.Callback,
+        BackPressable {
     private lateinit var viewModel: PlayViewModel
 
     private var googleMap: GoogleMap? = null
@@ -90,7 +96,8 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback, 
                 viewModel.export(it) { intent, cause ->
                     if (cause != null) {
                         // FIXME improvement & lifecycle
-                        Snackbar.make(container, cause.message ?: cause.toString(), LENGTH_LONG).show()
+                        Snackbar.make(container, cause.message
+                                ?: cause.toString(), LENGTH_LONG).show()
                     }
 
                     if (intent != null) {
@@ -128,13 +135,8 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback, 
 
         play_button.setOnClickListener {
             when {
-                !hasLocationPermission() -> {
-                    requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0x2F6A)
-                }
-                !isMockApp() -> {
-                    // TODO better to show dialog with instructions
-                    showDevOptions()
-                }
+                !hasLocationPermission() -> requestPermissions(arrayOf(ACCESS_FINE_LOCATION), 0x2F6A)
+                !isMockApp() -> DevSettingsDialog().show(childFragmentManager, "dev_settings")
                 viewModel.playing.value == true -> viewModel.stop()
                 else -> viewModel.play()
             }
@@ -154,6 +156,11 @@ class PlayBackFragment : Fragment(), OnMapReadyCallback, DeleteDialog.Callback, 
             timer.visibility = if (it == null) View.GONE else View.VISIBLE
         }
     }
+
+    override fun onOpenDevSettings() {
+        showDevOptions()
+    }
+
 
     override fun onDelete() {
         record?.let { viewModel.remove(it) }

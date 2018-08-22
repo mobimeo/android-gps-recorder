@@ -17,7 +17,7 @@
     <string name="record_bearing_accuracy">Bearing Accuracy</string>
     <string name="record_speed_accuracy">Speed Accuracy</string>
     <string name="record_horizontal_accuracy">Accuracy</string>
-    <string name="record_not_available">N/A</string>
+    <string name="record_not_available">-</string>
     <string name="record_signal_type">Signal type</string>
     <string name="record_signal_class">Signal class</string>
     <string name="record_signal_strength">Signal strength</string>
@@ -31,4 +31,8 @@
     <string name="records_record">Record</string>
     <string name="records_menu">Menu</string>
     <string name="universal_share">Share</string>
+    <string name="playback_pseudo_location">Fake location app</string>
+    <string name="playback_pseudo_location_description">Before you can play back the record, you need to set
+        this app as the fake location app in the developer options.</string>
+    <string name="playback_open_dev_settings">Open</string>
 </resources>

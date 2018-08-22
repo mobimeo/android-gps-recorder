@@ -20,7 +20,7 @@
     <string name="record_bearing_accuracy">Bearing Accuracy</string>
     <string name="record_speed_accuracy">Speed Accuracy</string>
     <string name="record_horizontal_accuracy">Accuracy</string>
-    <string name="record_not_available">n. a.</string>
+    <string name="record_not_available">-</string>
     <string name="record_signal_type">Signaltyp</string>
     <string name="record_signal_class">Signalklasse</string>
     <string name="record_signal_strength">Signalstärke</string>
@@ -31,4 +31,8 @@
     <string name="records_record">Aufnahme</string>
     <string name="records_menu">Menu</string>
     <string name="universal_share">Teilen</string>
+    <string name="playback_pseudo_location">Pseudo-Standort-App</string>
+    <string name="playback_pseudo_location_description">Bevor Sie die Aufnahme abspielen können, müssen Sie
+        diese App als Pseudo-Standort-App in den Entwickler Einstellungen Setzen.</string>
+    <string name="playback_open_dev_settings">Öffnen</string>
 </resources>
