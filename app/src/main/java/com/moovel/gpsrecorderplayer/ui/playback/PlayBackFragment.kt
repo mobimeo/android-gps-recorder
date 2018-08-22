@@ -22,23 +22,22 @@
 
 package com.moovel.gpsrecorderplayer.ui.playback
 
-import android.Manifest
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.app.AppOpsManager
 import android.app.AppOpsManager.MODE_ALLOWED
 import android.app.AppOpsManager.OPSTR_MOCK_LOCATION
-import android.content.Context
+import android.content.Context.APP_OPS_SERVICE
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
-import android.provider.Settings
+import android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast.LENGTH_LONG
+import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -81,10 +80,8 @@ class PlayBackFragment :
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.playback_fragment, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+            inflater.inflate(R.layout.playback_fragment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,12 +89,11 @@ class PlayBackFragment :
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         share_button.setOnClickListener {
-            record?.let {
-                viewModel.export(it) { intent, cause ->
+            record?.let { record ->
+                viewModel.export(record) { intent, cause ->
                     if (cause != null) {
                         // FIXME improvement & lifecycle
-                        Snackbar.make(container, cause.message
-                                ?: cause.toString(), LENGTH_LONG).show()
+                        Snackbar.make(container, cause.message ?: cause.toString(), LENGTH_LONG).show()
                     }
 
                     if (intent != null) {
@@ -157,9 +153,7 @@ class PlayBackFragment :
         }
     }
 
-    override fun onOpenDevSettings() {
-        showDevOptions()
-    }
+    override fun onOpenDevSettings() = showDevOptions()
 
     override fun onDelete() {
         record?.let { viewModel.remove(it) }
@@ -195,15 +189,13 @@ class PlayBackFragment :
     }
 
     private fun hasLocationPermission() =
-            requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            requireActivity().checkSelfPermission(ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
 
     private fun isMockApp(): Boolean {
-        val opsManager = requireContext().getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val opsManager = requireContext().getSystemService(APP_OPS_SERVICE) as AppOpsManager
         val uid = Process.myUid()
         return opsManager.checkOpNoThrow(OPSTR_MOCK_LOCATION, uid, BuildConfig.APPLICATION_ID) == MODE_ALLOWED
     }
 
-    private fun showDevOptions() {
-        startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS))
-    }
+    private fun showDevOptions() = startActivity(Intent(ACTION_APPLICATION_DEVELOPMENT_SETTINGS))
 }

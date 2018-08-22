@@ -35,4 +35,9 @@
     <string name="playback_pseudo_location_description">Before you can play back the record, you need to set
         this app as the fake location app in the developer options.</string>
     <string name="playback_open_dev_settings">Open</string>
+    <string name="playback_play_record">Play record</string>
+    <string name="playback_play_record_decription">This will play back the locations as a fake location service.</string>
+    <string name="record_record_button">Start record</string>
+    <string name="record_record_button_description">Press the record button to start recording locations and cellular
+        data</string>
 </resources>
