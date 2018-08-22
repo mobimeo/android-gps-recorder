@@ -161,7 +161,6 @@ class PlayBackFragment :
         showDevOptions()
     }
 
-
     override fun onDelete() {
         record?.let { viewModel.remove(it) }
         mainActivity?.startRecordsFragment()
