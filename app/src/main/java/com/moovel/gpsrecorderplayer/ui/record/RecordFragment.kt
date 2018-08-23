@@ -24,12 +24,15 @@ package com.moovel.gpsrecorderplayer.ui.record
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -50,6 +53,7 @@ import com.moovel.gpsrecorderplayer.utils.observe
 import com.moovel.gpsrecorderplayer.utils.setLocationSource
 import com.moovel.gpsrecorderplayer.utils.zoomToPolyline
 import kotlinx.android.synthetic.main.record_fragment.*
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -130,6 +134,18 @@ class RecordFragment : Fragment(), OnMapReadyCallback, BackPressable, BackDialog
             val r = record
             record = null
             if (r != null && !recording) mainActivity?.startPlaybackFragment(r)
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(context).apply {
+            if (!getBoolean("record_showcase", false)) {
+                MaterialTapTargetPrompt.Builder(requireActivity())
+                        .setTarget(record_button)
+                        .setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+                        .setPrimaryText(R.string.record_record_button)
+                        .setSecondaryText(R.string.record_record_button_description)
+                        .show()
+                edit { putBoolean("record_showcase", true) }
+            }
         }
     }
 

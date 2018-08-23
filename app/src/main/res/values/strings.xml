@@ -39,5 +39,5 @@
     <string name="playback_play_record_decription">This will play back the locations as a fake location service.</string>
     <string name="record_record_button">Start record</string>
     <string name="record_record_button_description">Press the record button to start recording locations and cellular
-        data</string>
+        data.</string>
 </resources>

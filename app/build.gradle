@@ -59,6 +59,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation 'com.airbnb.android:lottie:2.5.5'
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:2.12.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'

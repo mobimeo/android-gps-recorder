@@ -31,13 +31,16 @@ import android.content.Context.APP_OPS_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.os.Process
+import android.preference.PreferenceManager
 import android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast.LENGTH_LONG
+import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -60,6 +63,7 @@ import com.moovel.gpsrecorderplayer.utils.observe
 import com.moovel.gpsrecorderplayer.utils.setLocationSource
 import com.moovel.gpsrecorderplayer.utils.zoomToPolyline
 import kotlinx.android.synthetic.main.playback_fragment.*
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 
 class PlayBackFragment :
         Fragment(),
@@ -112,6 +116,18 @@ class PlayBackFragment :
         back_button.setOnClickListener {
             viewModel.stop()
             mainActivity?.startRecordsFragment()
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(context).apply {
+            if (!getBoolean("playback_showcase", false)) {
+                MaterialTapTargetPrompt.Builder(requireActivity())
+                        .setTarget(play_button)
+                        .setBackgroundColour(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+                        .setPrimaryText(R.string.playback_play_record)
+                        .setSecondaryText(R.string.playback_play_record_decription)
+                        .show()
+                edit { putBoolean("playback_showcase", true) }
+            }
         }
     }
 
@@ -168,9 +184,7 @@ class PlayBackFragment :
         googleMap.isMyLocationEnabled = true
         googleMap.uiSettings.setAllGesturesEnabled(false)
         googleMap.uiSettings.isMyLocationButtonEnabled = false
-        viewModel.polyline.value?.let {
-            if (isResumed) updatePolyline(it)
-        }
+        viewModel.polyline.value?.let { if (isResumed) updatePolyline(it) }
     }
 
     private fun updatePolyline(points: List<LatLng>?) {

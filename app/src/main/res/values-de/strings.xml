@@ -35,4 +35,8 @@
     <string name="playback_pseudo_location_description">Bevor Sie die Aufnahme abspielen können, müssen Sie
         diese App als Pseudo-Standort-App in den Entwickler Einstellungen Setzen.</string>
     <string name="playback_open_dev_settings">Öffnen</string>
+    <string name="playback_play_record">Aufnahme abspielen</string>
+    <string name="playback_play_record_decription">Spielt die Aufnahme als Pseudo-Standort-App ab.</string>
+    <string name="record_record_button">Aufnahme starrten</string>
+    <string name="record_record_button_description">Startet die Aufnahme von Standort- und Mobilfunkdaten.</string>
 </resources>
