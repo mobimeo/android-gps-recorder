@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+google_maps_api.xml
 .idea/
 .DS_Store
 build
