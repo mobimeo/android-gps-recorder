@@ -75,10 +75,10 @@ object Exporter {
             CsvColumn("index") { it?.index },
             CsvColumn("created") { it?.created },
             CsvColumn("networkType") { it?.networkType },
-            CsvColumn("networkTypeName") { it -> it?.networkType?.let { Signal.networkTypeName(it) } },
-            CsvColumn("networkClassName") { it?.networkType?.let { Signal.networkClassName(it) } },
+            CsvColumn("networkTypeName") { it -> it?.networkType?.let(Signal.Companion::networkTypeName) },
+            CsvColumn("networkClassName") { it?.networkType?.let(Signal.Companion::networkClassName) },
             CsvColumn("serviceState") { it?.serviceState },
-            CsvColumn("serviceStateName") { it?.serviceState?.let { Signal.serviceStateName(it) } },
+            CsvColumn("serviceStateName") { it?.serviceState?.let(Signal.Companion::serviceStateName) },
             CsvColumn("gsmSignalStrength") { it?.gsmSignalStrength },
             CsvColumn("gsmBitErrorRate") { it?.gsmBitErrorRate },
             CsvColumn("cdmaDbm") { it?.cdmaDbm },
@@ -88,7 +88,7 @@ object Exporter {
             CsvColumn("evdoSnr") { it?.evdoSnr },
             CsvColumn("gsm") { it?.gsm },
             CsvColumn("level") { it?.level },
-            CsvColumn("levelName") { it?.level?.let { Signal.levelName(it) } })
+            CsvColumn("levelName") { it?.level?.let(Signal.Companion::levelName) })
 
     fun export(context: Context, records: Collection<Record>, result: (Intent?, Throwable?) -> Unit) {
         val handler = Handler()
