@@ -12,7 +12,7 @@
 This Android app records location and cellular data. The data can be played as a fake location service and the recorded data can be exported.
 
 ## Requirements
-Min SDK Version is 26 - Android Version 8.0 Orea.
+Min SDK Version is 26 - Android Version 8.0 Oreo.
 
 GPS has to be enabled.
 
